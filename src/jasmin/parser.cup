@@ -111,10 +111,10 @@ nonterminal
        complex_instruction, defmethod, directive, endmethod, field_list,
        field_spec, fields, instruction, implements, implements_list, implements_spec,
        jas_file, label, limit_expr, lookup,
-       lookup_args, lookup_default, lookup_entry, lookup_list, method_list,
+       lookup_args, lookup_default, lookup_entry, lookup_list_t, lookup_list, method_list,
        method_spec, methods, set_expr, simple_instruction, source_spec,
        statement, statements, stmnt, super_spec, table, table_args, line_expr,
-       table_default, table_entry, table_list, throws_expr, var_expr, 
+       table_default, table_entry, table_list_t, table_list, throws_expr, var_expr, 
 	   code_attr_expr, 
 	   class_attrs, class_attr_list,  class_attr_spec,
 	   method_item, method_attrs, method_attr_list,  method_attr_spec,
@@ -487,7 +487,7 @@ complex_instruction ::=
 
 lookup ::=
     lookup_args
-    lookup_list
+    lookup_list_t
     lookup_default
   ;
 
@@ -496,8 +496,12 @@ lookup_args ::=
         {: classFile.newLookupswitch(); :}
   ;
 
+lookup_list_t ::=
+     | lookup_list
+  ;
+
 lookup_list ::=
-    lookup_list lookup_entry | lookup_entry
+    lookup_list lookup_entry | lookup_entry 
  ;
 
 lookup_entry ::=
@@ -521,7 +525,7 @@ lookup_default ::=
 
 table ::=
     table_args
-    table_list
+    table_list_t
     table_default
   ;
 
@@ -537,8 +541,12 @@ table_args ::=
         :}
   ;
 
+table_list_t ::=
+     | table_list
+	;
+
 table_list ::=
-    table_list table_entry | table_entry
+    table_list table_entry | table_entry 
   ;
 
 table_entry ::=
