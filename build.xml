@@ -66,4 +66,9 @@
         </delete>
     </target>
 
+    <target name="jasmin-jar" depends="compile">
+        <jar destfile="lib/jasmin.jar">
+            <fileset dir="classes"/>
+        </jar>
+    </target>
 </project>
