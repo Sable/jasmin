@@ -18,6 +18,11 @@
  * along with calls to ClassFile methods to output bytecode.
  */
 
+/* CHANGES
+ * soot.tagkits.Base64 is changed to Base64 from jas package. 
+ *
+ * Feng Qian, Jan 25, 2001
+ */
 
 package jasmin;
 
@@ -559,18 +564,18 @@ table_default ::=
 
 class_attrs ::= class_attr_list | /* */;
 class_attr_list ::= class_attr_list class_attr_spec | class_attr_spec;
-class_attr_spec ::= DCLASS_ATTR  Word:w Word:v SEP
+class_attr_spec ::= DCLASS_ATTR  Word:w Str:v SEP
           {:
-		byte[] data = soot.tagkit.Base64.decode(v.str_val.toCharArray());
+		byte[] data = Base64.decode(v.str_val.toCharArray());
                 classFile.addGenericAttrToClass(new GenericAttr(w.str_val, data));             
           :}
 ;
 	
 method_attrs ::= method_attr_list | /* */;
 method_attr_list ::= method_attr_list method_attr_spec | method_attr_spec;
-method_attr_spec ::= DMETHOD_ATTR  Word:w Word:v SEP
+method_attr_spec ::= DMETHOD_ATTR  Word:w Str:v SEP
           {:
-		 byte[] data = soot.tagkit.Base64.decode(v.str_val.toCharArray());
+		 byte[] data = Base64.decode(v.str_val.toCharArray());
                 classFile.addGenericAttrToMethod(w.str_val, data);	
           :}
 ;
@@ -578,9 +583,9 @@ method_attr_spec ::= DMETHOD_ATTR  Word:w Word:v SEP
 	
 field_attrs ::= field_attr_list | /* */;
 field_attr_list ::= field_attr_list field_attr_spec | field_attr_spec;
-field_attr_spec ::= DFIELD_ATTR  Word:w Word:v SEP
+field_attr_spec ::= DFIELD_ATTR  Word:w Str:v SEP
           {:
-		 byte[] data = soot.tagkit.Base64.decode(v.str_val.toCharArray());
+		 byte[] data = Base64.decode(v.str_val.toCharArray());
                 classFile.addGenericAttrToField(w.str_val, data);
           :}
 ;
