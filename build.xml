@@ -59,5 +59,11 @@
             <src path="lib/jas/src/jas"/>
         </javac>
     </target>
-    
+   
+    <target name="clean">
+        <delete quiet="true">
+            <fileset dir="classes" includes="**/*.class"/>
+        </delete>
+    </target>
+
 </project>
