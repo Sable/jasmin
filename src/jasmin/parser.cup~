@@ -76,7 +76,7 @@ terminal token
     DSOURCE, DTHROWS, DVAR, DIMPLEMENTS, DINTERFACE,
 
    // Attributes
-	DCODE_ATTR,
+	DCODE_ATTR, DCLASS_ATTR, DFIELD_ATTR, DMETHOD_ATTR,
 
 
     // keywords for directives
@@ -109,7 +109,11 @@ non terminal symbol
        lookup_args, lookup_default, lookup_entry, lookup_list, method_list,
        method_spec, methods, set_expr, simple_instruction, source_spec,
        statement, statements, stmnt, super_spec, table, table_args, line_expr,
-       table_default, table_entry, table_list, throws_expr, var_expr, code_attr_expr
+       table_default, table_entry, table_list, throws_expr, var_expr, 
+	code_attr_expr, 
+	class_attrs, class_attr_list,  class_attr_spec,
+	method_attrs, method_attr_list,  method_attr_spec,
+	field_attrs, field_attr_list,  field_attr_spec	
     ;
 
 non terminal int_token access;
@@ -117,14 +121,14 @@ non terminal int_token access;
 /* The grammar */
 
 jas_file ::=
-        source_spec
+        source_spec        
         class_spec
         super_spec
 	implements
+	class_attrs	
         fields
         methods
     ;
-
 
 // ---- Source specification
 
@@ -212,11 +216,13 @@ implements_spec ::= DIMPLEMENTS classname:name SEP
 	{: classFile.addInterface(name.str_val); :}
     ;
 
+
+
 // ---- Fields
 
 fields ::= field_list | /* empty */ ;
 
-field_list ::= field_list field_spec | field_spec ;
+field_list ::= field_list field_spec field_attrs | field_spec field_attrs;
 
 field_spec ::=
     DFIELD access:a Str:name Word:sig optional_default:v SEP
@@ -254,7 +260,7 @@ item ::=
 
 methods ::= method_list | /* empty */;
 
-method_list ::= method_list method_spec | method_spec ;
+method_list ::= method_list method_spec method_attrs | method_spec method_attrs;
 
 method_spec ::=
     defmethod
@@ -323,21 +329,16 @@ directive ::=
     DCATCH catch_expr
     |
     DSET set_expr
-  |
-  DCODE_ATTR code_attr_expr   
+    |
+    DCODE_ATTR code_attr_expr   
   ;
 
 
 
 code_attr_expr ::=
- Word:w Word:v
+ Word:w Str:v
           {:
-                byte[] data = soot.Base64.decode(v.str_val.toCharArray());
-                byte[] pc = soot.CodeAttribute.convertPcToByteArray(classFile.getPc() - classFile.getLastInstSize());
-                data[0] = pc[0];
-                data[1] = pc[1];
-
-                classFile._getCode().addGenericAttr(new GenericAttr(w.str_val, data));
+               classFile.addSootCodeAttr(w.str_val, v.str_val);    
           :}
 ;
 
@@ -552,6 +553,40 @@ table_default ::=
             classFile.endTableswitch(w.str_val);
         :}
   ;
+
+
+
+
+class_attrs ::= class_attr_list | /* */;
+class_attr_list ::= class_attr_list class_attr_spec | class_attr_spec;
+class_attr_spec ::= DCLASS_ATTR  Word:w Word:v SEP
+          {:
+		byte[] data = soot.Base64.decode(v.str_val.toCharArray());
+                classFile.addGenericAttrToClass(new GenericAttr(w.str_val, data));             
+          :}
+;
+	
+method_attrs ::= method_attr_list | /* */;
+method_attr_list ::= method_attr_list method_attr_spec | method_attr_spec;
+method_attr_spec ::= DMETHOD_ATTR  Word:w Word:v SEP
+          {:
+		 byte[] data = soot.Base64.decode(v.str_val.toCharArray());
+                classFile.addGenericAttrToMethod(w.str_val, data);	
+          :}
+;
+
+	
+field_attrs ::= field_attr_list | /* */;
+field_attr_list ::= field_attr_list field_attr_spec | field_attr_spec;
+field_attr_spec ::= DFIELD_ATTR  Word:w Word:v SEP
+          {:
+		 byte[] data = soot.Base64.decode(v.str_val.toCharArray());
+                classFile.addGenericAttrToField(w.str_val, data);
+          :}
+;
+
+
+
 
 
 /* --- Revision History ---------------------------------------------------

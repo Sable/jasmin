@@ -92,6 +92,7 @@ public class Main {
   	    classFile.report_error(fname + ": exception - <" +
                               e.getClass().getName() + "> " + e.getMessage() +
                               ".");
+	    e.printStackTrace();
         }
 	if (classFile.errorCount() > 0) {
             System.err.println(fname + ": Found "

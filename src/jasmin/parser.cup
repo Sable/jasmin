@@ -336,14 +336,9 @@ directive ::=
 
 
 code_attr_expr ::=
- Word:w Word:v
+ Word:w Str:v
           {:
-                byte[] data = soot.Base64.decode(v.str_val.toCharArray());
-                byte[] pc = soot.CodeAttribute.convertPcToByteArray(classFile.getPc() - classFile.getLastInstSize());
-                data[0] = pc[0];
-                data[1] = pc[1];
-
-                classFile._getCode().addGenericAttr(new GenericAttr(w.str_val, data));
+               classFile.addSootCodeAttr(w.str_val, v.str_val);    
           :}
 ;
 
@@ -566,7 +561,7 @@ class_attrs ::= class_attr_list | /* */;
 class_attr_list ::= class_attr_list class_attr_spec | class_attr_spec;
 class_attr_spec ::= DCLASS_ATTR  Word:w Word:v SEP
           {:
-		byte[] data = soot.Base64.decode(v.str_val.toCharArray());
+		byte[] data = soot.tagkit.Base64.decode(v.str_val.toCharArray());
                 classFile.addGenericAttrToClass(new GenericAttr(w.str_val, data));             
           :}
 ;
@@ -575,7 +570,7 @@ method_attrs ::= method_attr_list | /* */;
 method_attr_list ::= method_attr_list method_attr_spec | method_attr_spec;
 method_attr_spec ::= DMETHOD_ATTR  Word:w Word:v SEP
           {:
-		 byte[] data = soot.Base64.decode(v.str_val.toCharArray());
+		 byte[] data = soot.tagkit.Base64.decode(v.str_val.toCharArray());
                 classFile.addGenericAttrToMethod(w.str_val, data);	
           :}
 ;
@@ -585,7 +580,7 @@ field_attrs ::= field_attr_list | /* */;
 field_attr_list ::= field_attr_list field_attr_spec | field_attr_spec;
 field_attr_spec ::= DFIELD_ATTR  Word:w Word:v SEP
           {:
-		 byte[] data = soot.Base64.decode(v.str_val.toCharArray());
+		 byte[] data = soot.tagkit.Base64.decode(v.str_val.toCharArray());
                 classFile.addGenericAttrToField(w.str_val, data);
           :}
 ;

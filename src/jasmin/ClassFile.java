@@ -14,6 +14,8 @@ package jasmin;
  *
  */
 
+
+
 import jas.*;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -67,16 +69,22 @@ public class ClassFile {
     int high_value;
 
 
-    int codeSize;
+
     int lastInstSize;
     Method currentMethod;
     Var currentField;
 
+    
+    public void addSootCodeAttr(String name, String value)
+    {
+	class_env.addCPItem(new AsciiCP(name));
+	code.addSootCodeAttr(name, value);
+    }
+    
 
 
 
-    public int getPc() { return codeSize;}
-    public int getLastInstSize() { return lastInstSize;}
+
 
     public void addGenericAttrToMethod(String name, byte[] value)
     {
@@ -214,6 +222,7 @@ public class ClassFile {
     //
     void newMethod(String name, String signature, int access) {
         // set method state variables
+
         labels      = new Hashtable();
         method_name = name;
         code        = null;
@@ -238,13 +247,14 @@ public class ClassFile {
             if (catch_table != null) {
                 code.setCatchtable(catch_table);
             }
-
             if (var_table != null) {
                 code.setLocalVarTable(var_table);
             }
             if (line_table != null) {
                 code.setLineTable(line_table);
             }
+	   
+	    code.setLabelTable(labels);
         }
 	
 	currentMethod  =  new Method(method_access, new AsciiCP(method_name),
@@ -265,9 +275,9 @@ public class ClassFile {
         line_table  = null;
         var_table   = null;
 	
-	System.out.println("Code size: " + codeSize);
-	codeSize = 0;
-	lastInstSize = 0;
+
+
+
     }
 
     //
@@ -283,8 +293,8 @@ public class ClassFile {
         autoNumber();
         if (insn.args.equals("")) {
 	    Insn inst = new Insn(insn.opcode);
-	    lastInstSize = inst.size(class_env, _getCode());
-	    codeSize += lastInstSize;
+
+
             _getCode().addInsn(inst);
         } else if (insn.name.equals("wide")) {
             // don't do anything for this one...
@@ -300,8 +310,7 @@ public class ClassFile {
         autoNumber();
         if (name.equals("iinc")) {
 	    Insn inst = new IincInsn(v1, v2);
-	    lastInstSize = inst.size(class_env, _getCode());
-	    codeSize += lastInstSize; 
+
             _getCode().addInsn(inst);
         } else {
             throw new jasError("Bad arguments for instruction " + name);
@@ -328,8 +337,7 @@ public class ClassFile {
         }
 	
 	code.addInsn(inst);
-	lastInstSize = inst.size(class_env, _getCode());
-	codeSize += lastInstSize;
+
     }
 
     //
@@ -363,8 +371,7 @@ public class ClassFile {
             throw new jasError("Bad arguments for instruction " + name);
         }
 	_getCode().addInsn(inst);
-	lastInstSize = inst.size(class_env, _getCode());
-	codeSize += lastInstSize;
+
     }
 
     //
@@ -381,8 +388,7 @@ public class ClassFile {
         }
 	
 	code.addInsn(inst);
-	lastInstSize = inst.size(class_env, _getCode());
-	codeSize += lastInstSize;
+
     }
 
     //
@@ -408,8 +414,7 @@ public class ClassFile {
         }
 
 	code.addInsn(inst);
-	lastInstSize = inst.size(class_env, _getCode());
-	codeSize += lastInstSize;
+
     }
 
     //
@@ -459,8 +464,7 @@ public class ClassFile {
 
 
 	code.addInsn(inst);
-	lastInstSize = inst.size(class_env, _getCode());
-	codeSize += lastInstSize;
+
     }
 
     //
@@ -483,8 +487,7 @@ public class ClassFile {
         }
 
 	code.addInsn(inst);
-	lastInstSize = inst.size(class_env, _getCode());
-	codeSize += lastInstSize;
+
     }
 
     //
