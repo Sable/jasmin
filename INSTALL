@@ -1,3 +1,29 @@
+December 3, 2004 - Jennifer Lhotak
+To Compile Jasmin: 
+
+We've made a new build.xml file so Jasmin can be built using ant. 
+
+The first time you run it it will ask you to copy ant.settings.template to ant.settings and to set the variables in that file. (In particular the jav_cup.jar variable)
+
+At this time the only dependency is some version of Java Cup. Note we no longer distribute Cup with Jasmin. A maintained and up-to-date version of Cup is distributed with Polyglot which is also a dependency of Soot (just like this version of Jasmin). Therefore we recommend that you use that version of Cup. You may set the java_cup.jar variable to be a path to the entire Polyglot jar distributed with Soot and everything will work fine.
+
+To run ant to compile Jasmin use:
+
+$ ant
+
+To build a Jasmin jar, that will be put in the lib directory use:
+
+$ ant jasmin-jar
+
+Additionally, you may compile the individual parts of jasmin, jas and scm by using:
+
+$ ant jas
+
+or
+
+$ ant scm
+
+
 January 25, 2001 -PL
 updated May 3, 2001 - PL
 

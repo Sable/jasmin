@@ -16,6 +16,7 @@
             debug="true"
         >
             <src path="src"/>
+            <src path="generated/"/>
         </javac>
     </target>
 
@@ -27,6 +28,7 @@
             deprecation="true"
         >
             <src path="lib/jas/src/scm"/>
+            <src path="generated/scm"/>
         </javac>
     </target>
 
@@ -40,16 +42,20 @@
         </javac>
     </target>
     
-    <target name="autogen_run" depends="autogen_compile">
+    <target name="autogen_run" depends="autogen_compile, determine-autogen-uptodate" unless="autogen-uptodate">
         <java
             classname="autogen"
-            dir="lib/jas/src/scm"
+            dir="generated/scm"
             classpath="classes"
             fork="true"
         >
         </java>
     </target>
     
+    <target name="determine-autogen-uptodate">
+        <uptodate property="autogen-uptodate" srcfile="lib/jas/src/scm/autogen/autogen.java" targetfile="generated/scm/AutoInit.java"/>
+    </target>
+   
     <target name="jas">
         <javac
             destdir="classes"
@@ -63,6 +69,12 @@
     <target name="clean">
         <delete quiet="true">
             <fileset dir="classes" includes="**/*.class"/>
+        </delete>
+    </target>
+
+    <target name="veryclean" depends="clean">
+        <delete quiet="true">
+            <fileset dir="generated/scm" includes="**/*"/>
         </delete>
     </target>
 
