@@ -1,5 +1,8 @@
 Jasmin Revision History                                 Sable Research Group
 
+Sept 5, 2003                [Feng Qian]
+    fixed various compile shell scripts for SunOS
+
 May 4, 2002 - Release sable-1.1.4 [Feng Qian]
     - fixed jasmin.Scanner to allow an attribute string longer than 65536.  
 
