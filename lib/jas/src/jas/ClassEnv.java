@@ -28,7 +28,8 @@ public class ClassEnv implements RuntimeConstants
   Vector generic;
   boolean hasSuperClass;
   InnerClassAttr inner_class_attr;
-
+  boolean classSynth;
+  
   public ClassEnv()
   {
                                 // Fill in reasonable defaults
@@ -187,6 +188,9 @@ public class ClassEnv implements RuntimeConstants
     if (inner_class_attr != null) {
         numExtra++;
     }
+    if (isClassSynth()){
+        numExtra++;
+    }
     
     out.writeShort(numExtra);
     if (source != null)
@@ -197,6 +201,12 @@ public class ClassEnv implements RuntimeConstants
 	gattr.write(this, out);
       }
     
+    // synthetic attr
+    if (isClassSynth()){
+        SyntheticAttr sa = new SyntheticAttr();
+        sa.resolve(this);
+        sa.write(this, out);
+    }
     // inner class attr
     if (inner_class_attr != null){
         inner_class_attr.write(this, out);
@@ -246,15 +256,14 @@ public class ClassEnv implements RuntimeConstants
     methods.addElement(x);
   }
 
-  /*public void addInnerClassAttr(InnerClassAttr attr){
-    //attr.resolve(this);
-    inner_class_attr = attr; 
-    
+ 
+  public void setClassSynth(boolean b){
+    classSynth = b;
   }
-  public void addInnerClassSpecAttr(InnerClassSpecAttr attr){
-    inner_class_attr.addInnerClassSpec(attr);
-    
-  }*/
+
+  public boolean isClassSynth(){
+    return classSynth;
+  }
   
   public void finishInnerClassAttr(InnerClassAttr attr){
       inner_class_attr = attr;  

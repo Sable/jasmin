@@ -60,7 +60,8 @@ public class ClassFile {
     CodeAttr  code;
     InnerClassAttr inner_class_attr;
     Hashtable labels;
-
+    boolean methSynth;
+    
     int line_label_count, line_num;
     boolean auto_number;
 
@@ -249,6 +250,7 @@ public class ClassFile {
         line_label_count  = 0;
         method_signature = signature;
         method_access    = (short)access;
+        methSynth = false;
     }
 
     //
@@ -272,10 +274,15 @@ public class ClassFile {
 	   
 	    code.setLabelTable(labels);
         }
-	
+    
+        if (!methSynth){
 	currentMethod  =  new Method(method_access, new AsciiCP(method_name),
 					    new AsciiCP(method_signature), code, except_attr);
-    
+        }
+        else {
+	currentMethod  =  new Method(method_access, new AsciiCP(method_name),
+					    new AsciiCP(method_signature), code, except_attr, new SyntheticAttr());
+        }
 
 	class_env.addMethod( currentMethod);
 	
@@ -290,7 +297,7 @@ public class ClassFile {
         catch_table = null;
         line_table  = null;
         var_table   = null;
-	
+	    methSynth   = false;
 
 
 
@@ -752,6 +759,14 @@ public class ClassFile {
    
     void endInnerClassAttr(){
         class_env.finishInnerClassAttr(inner_class_attr);
+    }
+    
+    void addClassSynthAttr(){
+        class_env.setClassSynth(true);
+    }
+
+    void addMethSynthAttr(){
+        methSynth = true;
     }
     
     // PUBLIC API TO JASMIN:

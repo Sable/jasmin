@@ -16,7 +16,7 @@ public class Method
   CP name, sig;
   CodeAttr code;
   ExceptAttr excepts;
-    
+  SyntheticAttr synthAttr = null;    
     Vector genericAttrs = new Vector();
 
   /**
@@ -35,7 +35,14 @@ public class Method
     code = cd; excepts = ex;
   }
 
-
+  public Method (short macc, CP name, CP sig, CodeAttr cd, ExceptAttr ex, SyntheticAttr synth)
+  {
+    acc = macc;
+    this.name = name;
+    this.sig = sig;
+    code = cd; excepts = ex;
+    synthAttr = synth;
+  }
     public void addGenericAttr(GenericAttr g)
     {
 	genericAttrs.addElement(g);	
@@ -49,6 +56,7 @@ public class Method
     e.addCPItem(sig);
     if (code != null)  code.resolve(e);
     if (excepts != null)  excepts.resolve(e);
+    if (synthAttr != null) synthAttr.resolve(e);
   }
 
   void write(ClassEnv e, DataOutputStream out)
@@ -61,9 +69,13 @@ public class Method
     if (code != null) cnt ++;
     if (excepts != null) cnt++;
     cnt += genericAttrs.size();
+    if (synthAttr != null){
+        cnt++;
+    }
     out.writeShort(cnt);
     if (code != null) code.write(e, out);
     if (excepts != null) excepts.write(e, out);
+    if (synthAttr != null) synthAttr.write(e, out);
 
     for(Enumeration enu = genericAttrs.elements(); enu.hasMoreElements();) {
 	((GenericAttr)enu.nextElement()).write(e, out);
