@@ -13,8 +13,8 @@
  * CodeAttr's are used as a bag to hold lists of instructions
  * until it is time to put them into a Class.
  * @see ClassEnv#addMethod
- * @author $Author: fqian $
- * @version $Revision: 1.1 $
+ * @author $Author: olhota $
+ * @version $Revision: 1.2 $
  */
 
 package jas;
@@ -124,13 +124,14 @@ public class CodeAttr
 
 	    boolean isLabel = false;//xx what if it starts with %
 
-	    if(attrValue.startsWith("%"))
-		isLabel = true;
 
-
-	    StringTokenizer st = new StringTokenizer(attrValue, "%");		
+	    StringTokenizer st = new StringTokenizer(attrValue, "%", true);		
 	    while(st.hasMoreTokens()) {
 		String token = (String) st.nextElement();
+		if( token.equals( "%" ) ) {
+		    isLabel = !isLabel;
+		    continue;
+		}
 		if(isLabel) {		
 		    Integer i = (Integer) labelToPc.get(token);
 		    
@@ -139,7 +140,6 @@ public class CodeAttr
 			labelToPc.put(token, new Integer( getPc(getLabel(token))));
 		    } catch(jas.jasError e) {throw new RuntimeException(e.toString());}
 		}		    
-		isLabel = !isLabel;
 	    }
 		
 	    byte[] data = CodeAttributeDecoder.decode(attrValue, labelToPc);		

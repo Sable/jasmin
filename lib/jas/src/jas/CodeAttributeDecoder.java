@@ -74,14 +74,16 @@ class CodeAttributeDecoder
 	int attributeSize = 0;
 	int tableSize = 0;
 	
-	StringTokenizer st = new StringTokenizer(attr, "%");
+	StringTokenizer st = new StringTokenizer(attr, "%", true);
 	boolean isLabel = false;
-	if(attr.startsWith("%"))
-	    isLabel = true;
 
 	byte[] pcArray;
 	while(st.hasMoreTokens()) {	    
 	    String token = st.nextToken();
+	    if( token.equals( "%" ) ) {
+		isLabel = !isLabel;
+		continue;
+	    }
 	    if(isLabel) {		
 		Integer pc = (Integer) labelToPc.get(token);
 
@@ -110,7 +112,6 @@ class CodeAttributeDecoder
 
 		attributeHunks.add(hunk);
 	    }
-	    isLabel = !isLabel;	  
 	}
 
 	attributeSize += 2;

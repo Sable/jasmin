@@ -91,14 +91,15 @@ class Scanner implements java_cup.runtime.Scanner {
     //
     // initialize the scanner
     //
+    final static int BIGNUM=65000;
     public Scanner(InputStream i) throws java.io.IOException
     {
 	inp = i;
         line_num = 1;
         char_num = 0;
         line = new StringBuffer();
-        chars = new char[66536];
-        secondChars = new char[66536];
+        chars = new char[BIGNUM];
+        secondChars = new char[BIGNUM];
         unicodeBuffer = new char[4];
         is_first_sep = true;
         advance();
