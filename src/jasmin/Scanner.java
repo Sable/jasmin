@@ -24,7 +24,7 @@ import java_cup.runtime.*;
 import java.util.*;
 import java.io.InputStream;
 
-class Scanner {
+class Scanner implements java_cup.runtime.Scanner {
     InputStream inp;
 
     // single lookahead character
@@ -115,9 +115,9 @@ class Scanner {
     }
 
     //
-    // recognize and return the next complete token
+    // recognize and return the next complete symbol
     //
-    public token next_token()
+    public Symbol next_token()
                 throws java.io.IOException, jasError
     {
 
@@ -145,7 +145,7 @@ class Scanner {
                     return next_token();
                 }
                 token_line_num = line_num;
-                return new token(sym.SEP);
+                return new Symbol(sym.SEP);
 
             case '0': case '1': case '2': case '3': case '4':
             case '5': case '6': case '7': case '8': case '9':
@@ -168,25 +168,25 @@ class Scanner {
                         pos++;
                     }
                     String str = new String(chars, 0, pos);
-                    token tok;
+                    Symbol tok;
 
                     if(str.equals("+DoubleInfinity"))
-                        return new num_token(sym.Num, new Double(1.0/0.0));
+                        return new Symbol(sym.Num, new Double(1.0/0.0));
                     
                     if(str.equals("+DoubleNaN"))
-                        return new num_token(sym.Num, new Double(0.0d/0.0));
+                        return new Symbol(sym.Num, new Double(0.0d/0.0));
                     
                     if(str.equals("+FloatNaN"))
-                        return new num_token(sym.Num, new Float(0.0f/0.0));
+                        return new Symbol(sym.Num, new Float(0.0f/0.0));
                         
                     if(str.equals("-DoubleInfinity"))
-                        return new num_token(sym.Num, new Double(-1.0/0.0));
+                        return new Symbol(sym.Num, new Double(-1.0/0.0));
                     
                     if(str.equals("+FloatInfinity"))
-                        return new num_token(sym.Num, new Float(1.0f/0.0f));
+                        return new Symbol(sym.Num, new Float(1.0f/0.0f));
                         
                     if(str.equals("-FloatInfinity"))
-                        return new num_token(sym.Num, new Float(-1.0f/0.0f));
+                        return new Symbol(sym.Num, new Float(-1.0f/0.0f));
                     
                      
                             
@@ -207,9 +207,9 @@ class Scanner {
                     }
 
                     if (num instanceof Integer) {
-                        return new int_token(sym.Int, num.intValue());
+                        return new Symbol(sym.Int, new Integer(num.intValue()));
                     } else {
-                        return new num_token(sym.Num, num);
+                        return new Symbol(sym.Num, num);
                     }
                 }
 
@@ -264,7 +264,7 @@ class Scanner {
                         pos++;
                     }
                     advance(); // skip close quote
-                    return new str_token(sym.Str, new String(chars, 0, pos));
+                    return new Symbol(sym.Str, new String(chars, 0, pos));
                 }
 
             case ' ':
@@ -276,18 +276,18 @@ class Scanner {
             case '=':               // EQUALS token
                 advance();
                 is_first_sep = false;
-                return new token(sym.EQ);
+                return new Symbol(sym.EQ);
 
             case ':':               // COLON token
                 advance();
                 is_first_sep = false;
-                return new token(sym.COLON);
+                return new Symbol(sym.COLON);
 
             case -1:                // EOF token
                 is_first_sep = false;
                 char_num = -1;
                 line.setLength(0);
-                return new token(sym.EOF);
+                return new Symbol(sym.EOF);
 
             default:
                 {
@@ -329,22 +329,22 @@ class Scanner {
                     // convert the byte array into a String
                     String str = new String(secondChars, 0, secondPos);
 
-                    token tok;
+                    Symbol tok;
                     if ((tok = ReservedWords.get(str)) != null) {
                         // Jasmin keyword or directive
                         return tok;
                     } else if (InsnInfo.contains(str)) {
                         // its a JVM instruction
-                        return new str_token(sym.Insn, str);
+                        return new Symbol(sym.Insn, str);
                     } /*else if (str.charAt(0) == '$') {
                         // Perform variable substitution
                         Object v;
                         if ((v = dict.get(str.substring(1))) != null) {
-                            return ((token)v);
+                            return ((Symbol)v);
                         }
                     } */ else {
                         // Unrecognized string token (e.g. a classname)
-                        return new str_token(sym.Word, str);
+                        return new Symbol(sym.Word, str);
                     }
 
                 } /* default */

@@ -196,16 +196,18 @@ public class ClassFile {
             // create a constant pool entry for the initial value
             CP cp = null;
 
-            if (value instanceof Integer) {
-                cp = new IntegerCP(((Integer)value).intValue());
-            } else if (value instanceof Float) {
-                cp = new FloatCP(((Float)value).floatValue());
-            } else if (value instanceof Double) {
-                cp = new DoubleCP(((Double)value).doubleValue());
-            } else if (value instanceof Long) {
-                cp = new LongCP(((Long)value).longValue());
-            } else if (value instanceof String) {
-                cp = new StringCP((String)value);
+            // correctness patch due to Brian Demsky (bdemsky@mit.edu)
+            // it's strange that Soot doesn't trigger this bug.
+            if (sig.equals("I")||sig.equals("Z")||sig.equals("C")||sig.equals("B")||sig.equals("S")) {
+                cp = new IntegerCP(((Number)value).intValue());
+            } else if (sig.equals("F")) {
+                cp = new FloatCP(((Number)value).floatValue());
+            } else if (sig.equals("D")) {
+                cp = new DoubleCP(((Number)value).doubleValue());
+            } else if (sig.equals("L")) {
+                cp = new LongCP(((Number)value).longValue());
+            } else if (sig.equals("Ljava/lang/String;")) {
+               cp = new StringCP((String)value);
             }
 
             // add the field

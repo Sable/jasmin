@@ -1,0 +1,34 @@
+#!/bin/csh
+#
+# jasmin - runs the Jasmin assembler
+# 
+# Usage:
+#     jasmin [-d <directory>] <filename> [<filename> ...]
+#
+
+#
+# JASMIN needs to be set to the directory containing the
+# Jasmin distribution. We try:
+#
+#     /usr/local/jasmin
+#     ~/jasmin
+#     `pwd`
+#
+#
+
+if (-e /usr/local/jasmin) then
+    set JASMIN=/usr/local/jasmin
+else if (-e $HOME/jasmin) then
+    # try the home directory
+    set JASMIN=$HOME/jasmin
+else
+    # try the current directory
+    set JASMIN=`pwd`
+endif
+
+if (! -e $JASMIN/bin/jasmin) then
+    echo "Cannot find Jasmin! Check the jasmin script is looking in the right place."
+else
+    setenv CLASSPATH $JASMIN/classes
+    exec java jasmin.Main $*
+endif

@@ -35,8 +35,8 @@ import java.util.Hashtable;
 
 action code {:
     short access_val;
-	public ClassFile classFile;
     public Scanner scanner;
+    public ClassFile classFile;
 :};
 
 parser code {:
@@ -56,9 +56,9 @@ parser code {:
 	}
 
 	parser(ClassFile classFile, Scanner scanner) {
-		super();
+	    super();
 
-		this.scanner = scanner;
+	    this.scanner = scanner;
 	    this.classFile = classFile;
 	}
 :};
@@ -98,15 +98,15 @@ terminal token
     EQ, SEP, COLON
  ;
 
-terminal str_token Str, Word, Insn;
-terminal int_token Int;
-terminal num_token Num;
+terminal String Str, Word, Insn;
+terminal Integer Int;
+terminal Number Num;
 
-non terminal str_token classname;
-non terminal var_token optional_default, item;
+nonterminal String classname;
+nonterminal Object optional_default, item;
 
 /* Non terminals */
-non terminal symbol
+nonterminal 
        access_item, access_items, access_list, catch_expr, class_spec,
        complex_instruction, defmethod, directive, endmethod, field_list,
        field_spec, fields, instruction, implements, implements_list, implements_spec,
@@ -121,7 +121,7 @@ non terminal symbol
 	   field_item, field_attrs, field_attr_list,  field_attr_spec	
     ;
 
-non terminal int_token access;
+nonterminal Short access;
 
 /* The grammar */
 
@@ -139,7 +139,7 @@ jas_file ::=
 
 source_spec ::=
     DSOURCE Word:w SEP
-        {: classFile.setSource(w.str_val); :}
+        {: classFile.setSource(w); :}
     |
     /* nothing */
 ;
@@ -149,14 +149,14 @@ source_spec ::=
 class_spec ::=
     DCLASS access:a classname:name SEP
         {:
-            classFile.setClass(name.str_val,
-                (short)(a.int_val | RuntimeConstants.ACC_SUPER));
+            classFile.setClass(name,
+                (short)(a.intValue() | RuntimeConstants.ACC_SUPER));
         :}
     |
     DINTERFACE access:a classname:name SEP
         {:
-            classFile.setClass(name.str_val,
-                (short)(a.int_val |
+            classFile.setClass(name,
+                (short)(a.intValue() |
                         RuntimeConstants.ACC_SUPER |
                         RuntimeConstants.ACC_INTERFACE));
         :}
@@ -164,14 +164,14 @@ class_spec ::=
 
 classname ::=
     Word:w
-        {: RESULT.str_val = ScannerUtils.convertDots(w.str_val); :}
+        {: RESULT = ScannerUtils.convertDots(w); :}
 
   ;
 
 access ::=
     {: access_val = 0; :}
         access_list
-    {: RESULT.int_val = access_val; :}
+    {: RESULT = new Short(access_val); :}
  ;
 
 
@@ -207,7 +207,7 @@ access_item ::=
 super_spec ::=
     DSUPER classname:name SEP
         {:
-            classFile.setSuperClass(name.str_val);
+            classFile.setSuperClass(name);
         :}
   ;
 
@@ -218,7 +218,7 @@ implements ::= implements_list | /* empty */ ;
 implements_list ::= implements_list implements_spec | implements_spec ;
 
 implements_spec ::= DIMPLEMENTS classname:name SEP
-	{: classFile.addInterface(name.str_val); :}
+	{: classFile.addInterface(name); :}
     ;
 
 
@@ -234,25 +234,25 @@ field_item ::= field_spec field_attrs | field_spec;
 field_spec ::=
     DFIELD access:a Str:name Word:sig optional_default:v SEP
         {:
-            classFile.addField((short)a.int_val, name.str_val, sig.str_val,
-                            v.var_val);
+            classFile.addField((short)a.intValue(), name, sig,
+                            v);
         :}
    ;
 
 // default value for a field
 optional_default ::=
-     EQ item:v   {: RESULT.var_val = v.var_val; :}
+     EQ item:v   {: RESULT = v; :}
      |
-     /* empty */ {: RESULT.var_val = null; :}
+     /* empty */ {: RESULT = null; :}
   ;
 
 // an item is an integer, a float/double/long, or a quoted string
 item ::=
-    Int:i {: RESULT.var_val = new Integer(i.int_val); :}
+    Int:i {: RESULT = i; :}
     |
-    Num:n {: RESULT.var_val = n.num_val; :}
+    Num:n {: RESULT = n; :}
     |
-    Str:s {: RESULT.var_val = s.str_val; :}
+    Str:s {: RESULT = s; :}
   ;
 
 // ---- Methods
@@ -274,8 +274,8 @@ method_spec ::=
 defmethod ::=
     DMETHOD access:i Word:name SEP
         {:
-            String split[] = ScannerUtils.splitMethodSignature(name.str_val);
-            classFile.newMethod(split[0], split[1], i.int_val);
+            String split[] = ScannerUtils.splitMethodSignature(name);
+            classFile.newMethod(split[0], split[1], i.intValue());
         :}
   ;
 
@@ -312,7 +312,7 @@ stmnt ::=
 label ::=
     Word:label COLON
         {:
-            classFile.plantLabel(label.str_val);
+            classFile.plantLabel(label);
         :}
   ;
 
@@ -339,7 +339,7 @@ directive ::=
 code_attr_expr ::=
  Word:w Str:v
           {:
-               classFile.addSootCodeAttr(w.str_val, v.str_val);    
+               classFile.addSootCodeAttr(w, v);    
           :}
 ;
 
@@ -354,13 +354,13 @@ code_attr_expr ::=
 var_expr ::=
     Int:reg IS Word:name Word:sig FROM Word:slab TO Word:elab
         {:
-             classFile.addVar(slab.str_val, elab.str_val, name.str_val,
-                            sig.str_val, reg.int_val);
+             classFile.addVar(slab, elab, name,
+                            sig, reg.intValue());
         :}
     |
     Int:reg IS Word:name Word:sig
         {:
-             classFile.addVar(null, null, name.str_val, sig.str_val, reg.int_val);
+             classFile.addVar(null, null, name, sig, reg.intValue());
         :}
 ;
 
@@ -372,29 +372,29 @@ limit_expr ::=
     Word:w Int:v
       {:
         // .limit locals
-        if (w.str_val.equals("locals")
-                 || w.str_val.equals("vars")) // "vars" for historic reasons
-            classFile.setVarSize((short)v.int_val);
+        if (w.equals("locals")
+                 || w.equals("vars")) // "vars" for historic reasons
+            classFile.setVarSize((short)v.intValue());
         // .limit stack
-        else if (w.str_val.equals("stack"))
-            classFile.setStackSize((short)v.int_val);
+        else if (w.equals("stack"))
+            classFile.setStackSize((short)v.intValue());
         else
             classFile.report_error(".limit expected \"stack\" or \"locals\", but got "
-                          + w.str_val);
+                          + w);
       :}
 ;
 
 // .line <num>
 line_expr ::=
     Int:v
-       {: classFile.addLine(v.int_val); :}
+       {: classFile.addLine(v.intValue()); :}
 ;
 
 // .throws <class>
 throws_expr ::=
     classname:s
         {:
-            classFile.addThrow(s.str_val);
+            classFile.addThrow(s);
         :}
   ;
 
@@ -402,21 +402,21 @@ throws_expr ::=
 catch_expr ::=
     classname:aclass FROM Word:fromlab TO Word:tolab USING Word:branchlab
         {:
-            classFile.addCatch(aclass.str_val,
-                            fromlab.str_val, tolab.str_val,
-                            branchlab.str_val);
+            classFile.addCatch(aclass,
+                            fromlab, tolab,
+                            branchlab);
         :}
   ;
 
 // .set <var> = <val>
 set_expr ::=
-    Word:name Int:v     {: scanner.dict.put(name.str_val, v); :}
+    Word:name Int:v     {: scanner.dict.put(name, v); :}
     |
-    Word:name Word:v    {: scanner.dict.put(name.str_val, v); :}
+    Word:name Word:v    {: scanner.dict.put(name, v); :}
     |
-    Word:name Num:v  {: scanner.dict.put(name.str_val, v); :}
+    Word:name Num:v  {: scanner.dict.put(name, v); :}
     |
-    Word:name Str:v  {: scanner.dict.put(name.str_val, v); :}
+    Word:name Str:v  {: scanner.dict.put(name, v); :}
 ;
 
 instruction ::=
@@ -430,42 +430,42 @@ instruction ::=
 simple_instruction ::=
     Insn:i
         {:
-            classFile.plant(i.str_val);
+            classFile.plant(i);
         :}
     |
     Insn:i Int:n1 Int:n2
         {:
-            classFile.plant(i.str_val, n1.int_val, n2.int_val);
+            classFile.plant(i, n1.intValue(), n2.intValue());
         :}
     |
     Insn:i Int:n
         {:
-            classFile.plant(i.str_val, n.int_val);
+            classFile.plant(i, n.intValue());
         :}
     |
     Insn:i Num:n
         {:
-            classFile.plant(i.str_val, n.num_val);
+            classFile.plant(i, n);
         :}
     |
     Insn:i Word:n
         {:
-            classFile.plant(i.str_val, n.str_val);
+            classFile.plant(i, n);
         :}
     |
     Insn:i Word:n Int:n2
         {:
-            classFile.plant(i.str_val, n.str_val, n2.int_val);
+            classFile.plant(i, n, n2.intValue());
         :}
     |
     Insn:i Word:n1 Word:n2
         {:
-            classFile.plant(i.str_val, n1.str_val, n2.str_val);
+            classFile.plant(i, n1, n2);
         :}
     |
     Insn:i Str:n
         {:
-            classFile.plantString(i.str_val, n.str_val);
+            classFile.plantString(i, n);
         :}
   ;
 
@@ -503,13 +503,13 @@ lookup_list ::=
 lookup_entry ::=
     Int:i COLON Word:w SEP
         {:
-            classFile.addLookupswitch(i.int_val, w.str_val);
+            classFile.addLookupswitch(i.intValue(), w);
         :}
   ;
 
 lookup_default ::=
     DEFAULT COLON Word:w
-        {: classFile.endLookupswitch(w.str_val); :}
+        {: classFile.endLookupswitch(w); :}
   ;
 
 
@@ -528,12 +528,12 @@ table ::=
 table_args ::=
     Int:low SEP     /* one argument : the <low> parameter */
         {:
-            classFile.newTableswitch(low.int_val);
+            classFile.newTableswitch(low.intValue());
         :}
     |
     Int:low Int:high SEP     /* two arguments : <low> and <high> parameters */
         {:
-            classFile.newTableswitch(low.int_val, high.int_val);
+            classFile.newTableswitch(low.intValue(), high.intValue());
         :}
   ;
 
@@ -544,14 +544,14 @@ table_list ::=
 table_entry ::=
     Word:w SEP
         {:
-            classFile.addTableswitch(w.str_val);
+            classFile.addTableswitch(w);
         :}
   ;
 
 table_default ::=
     DEFAULT COLON Word:w
         {:
-            classFile.endTableswitch(w.str_val);
+            classFile.endTableswitch(w);
         :}
   ;
 
@@ -562,8 +562,8 @@ class_attrs ::= class_attr_list | /* */;
 class_attr_list ::= class_attr_list class_attr_spec | class_attr_spec;
 class_attr_spec ::= DCLASS_ATTR  Word:w Str:v SEP
           {:
-		byte[] data = Base64.decode(v.str_val.toCharArray());
-                classFile.addGenericAttrToClass(new GenericAttr(w.str_val, data));             
+		byte[] data = Base64.decode(v.toCharArray());
+                classFile.addGenericAttrToClass(new GenericAttr(w, data));             
           :}
 ;
 	
@@ -571,8 +571,8 @@ method_attrs ::= method_attr_list;
 method_attr_list ::= method_attr_list method_attr_spec | method_attr_spec;
 method_attr_spec ::= DMETHOD_ATTR  Word:w Str:v SEP
           {:
-		 byte[] data = Base64.decode(v.str_val.toCharArray());
-                classFile.addGenericAttrToMethod(w.str_val, data);	
+		 byte[] data = Base64.decode(v.toCharArray());
+                classFile.addGenericAttrToMethod(w, data);	
           :}
 ;
 
@@ -581,8 +581,8 @@ field_attrs ::= field_attr_list;
 field_attr_list ::= field_attr_list field_attr_spec | field_attr_spec;
 field_attr_spec ::= DFIELD_ATTR  Word:w Str:v SEP
           {:
-		 byte[] data = Base64.decode(v.str_val.toCharArray());
-                classFile.addGenericAttrToField(w.str_val, data);
+		 byte[] data = Base64.decode(v.toCharArray());
+                classFile.addGenericAttrToField(w, data);
           :}
 ;
 

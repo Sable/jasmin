@@ -1,0 +1,40 @@
+January 25, 2001 -PL
+
+How to compile jasmin:
+
+By default, bin/compile_all.sh should be able to recompile all classes.
+If bin/compile_all.sh fails on some JDKs, user can compile each package
+manually by following below instructions.
+
+- compile jas (following instructions are from lib/jas/src/compile.sh)
+  * from lib/jas/src directory,
+  *  create empty classes subdirectory
+  *  javac -d classes jas/*.java (ignoring warnings)
+  *  cd scm
+  *  export CLASSPATH=$(JASMIN_ROOT)/lib/jas/src/classes
+  *  javac -d . autogen/autogen.java
+  *  java -cp .:$CLASSPATH autogen
+  *  cd ..
+  *  javac -d classes scm/*.java
+- copy jas class files to the classes directory
+  * cp -a $(JASMIN_ROOT)/lib/jas/src/classes/* $(JASMIN_ROOT)/classes
+
+- compile java_cup and java_cup runtime ( lib/cup/compile.sh )
+  * cd $(JASMIN_ROOT)/lib/cup
+  * create empty classes subdirectory
+  * javac -d ./classes src/java_cup/*.java src/java_cup/runtime/*.java
+  * cp ./classes/* ${JASMIN_ROOT}/classes
+  
+- (optional) compile jasmin's javacup parser
+  * first, add java_cup package to the class path
+  *  export CLASSPATH=${JASMIN_ROOT}/classes:${CLASSPATH}
+  *  cd ${JASMIN_ROOT}/src
+  *  (mkdir classes; cd classes)
+  *  java java_cup.Main < ../jasmin/parser.cup
+  *  mv sym.java parser.java ../jasmin
+
+- compile jasmin ( src/compile.sh )
+  * export CLASSPATH=$(JASMIN_ROOT)/classes
+  * cd $(JASMIN_ROOT)/src
+  * javac -d classes jasmin/*.java
+  * mv classes/* ${JASMIN_ROOT}/classes

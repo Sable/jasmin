@@ -1,0 +1,17 @@
+From toddk@MICROSOFT.com Tue Mar 24 22:07:19 1998
+Date: Fri, 30 Jan 1998 07:54:26 -0800
+From: Todd Knoblock <toddk@MICROSOFT.com>
+To: "'cananian@alumni.princeton.edu'" <cananian@alumni.Princeton.EDU>
+Subject: Java cup under Windows NT.
+
+I wanted to try java cup under Windows NT.  Rather than transliterating the
+csh shell script, I put together a little makefile for it.  I thought you
+might want to include it in the distribution so that it is available for the
+next person that wants to use java cup under Windows NT.
+
+Todd Knoblock
+
+To use, place this file in the root javacup directory (where the "java_cup"
+directory lives), and type "nmake" from that directory.
+
+[The makefile has been included in this directory. -- CSA 24-Mar-1998 ]

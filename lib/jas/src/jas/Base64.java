@@ -1,6 +1,6 @@
 // *** WARNING *** 
-// This Soot file has been copied to jasmin, as it is required for
-// jasmin compilation.  In the unlikely event that any changes are
+// This Soot file has been copied to jas, as it is required for
+// jas and jasmin compilation.  In the unlikely event that any changes are
 // made to this file, they should be reflected in the Soot
 // distribution.
 //  - Patrick Lam, 01/25/2001
@@ -33,7 +33,7 @@
 //                                                                     //
 ////////////////////end license & copyright header///////////////////////
 
-package jasmin;
+package jas;
 
 /**
 *   Provides encoding of raw bytes to base64-encoded characters, and
