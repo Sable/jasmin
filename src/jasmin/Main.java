@@ -54,7 +54,7 @@ public class Main {
     /**
      * The Jasmin version
      */
-    public static final String version = "v sable-1.2";
+    public static final String version = "2.2.0";
 
     /**
      * Called to assemble a single file.

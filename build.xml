@@ -84,7 +84,7 @@
         </jar>
     </target>
 
-    <target name="barebones" despends="clean,settings">
+    <target name="barebones" depends="clean,settings">
         <jar destfile="${release.loc}/jasminsrc-${jasmin.version}.jar">
             <fileset dir="."/>
         </jar>
