@@ -164,7 +164,16 @@ class Scanner implements java_cup.runtime.Scanner {
                         if (separator(next_char)) {
                             break;
                         }
-                        chars[pos] = (char)next_char;
+			try {
+			  chars[pos] = (char)next_char;
+			} catch (ArrayIndexOutOfBoundsException abe) {
+			  char[] tmparray = new char[chars.length*2];
+			  System.arraycopy(chars, 0,
+					   tmparray, 0,
+					   chars.length);
+			  chars = tmparray;
+			  chars[pos] = (char)next_char;			 
+			}
                         pos++;
                     }
                     String str = new String(chars, 0, pos);
@@ -260,7 +269,17 @@ class Scanner implements java_cup.runtime.Scanner {
                         } else if (next_char == '"') {
                             break;
                         }
-                        chars[pos] = (char)next_char;
+			
+			try {
+			  chars[pos] = (char)next_char;
+			} catch (ArrayIndexOutOfBoundsException abe) {
+			  char[] tmparray = new char[chars.length*2];
+			  System.arraycopy(chars, 0,
+					   tmparray, 0,
+					   chars.length);
+			  chars = tmparray;
+			  chars[pos] = (char)next_char;
+			}
                         pos++;
                     }
                     advance(); // skip close quote
@@ -304,7 +323,16 @@ class Scanner implements java_cup.runtime.Scanner {
                         if (separator(next_char)) {
                             break;
                         }
-                        chars[pos] = (char)next_char;
+			try {
+			  chars[pos] = (char)next_char;
+			} catch (ArrayIndexOutOfBoundsException abe) {
+			  char[] tmparray = new char[chars.length*2];
+			  System.arraycopy(chars, 0,
+					   tmparray, 0,
+					   chars.length);
+			  chars = tmparray;
+			  chars[pos] = (char)next_char;
+			}
                         pos++;
                     }
 
@@ -313,17 +341,39 @@ class Scanner implements java_cup.runtime.Scanner {
                     // Parse all the unicode escape sequences
                         for(int i = 0; i < pos; i++)
                         {
-                            if(chars[i] == '\\' && (i + 5) < pos &&
-                                chars[i+1] == 'u')
-                            {
-                                int intValue = Integer.parseInt(new String(chars, i+2, 4), 16);
-                                
-                                secondChars[secondPos++] = (char) intValue;
-                                
-                                i += 5;
-                            }
-                            else
-                                secondChars[secondPos++] = chars[i];
+			  if(chars[i] == '\\' && (i + 5) < pos &&
+			     chars[i+1] == 'u') {
+			    int intValue = 
+			      Integer.parseInt(new String(chars, i+2, 4), 16);
+                          
+			    try {
+			      secondChars[secondPos] = (char) intValue;
+			    } catch (ArrayIndexOutOfBoundsException abe) {
+			      char[] tmparray = 
+				new char[secondChars.length*2];
+			      System.arraycopy(secondChars, 0,
+					       tmparray, 0,
+					       secondChars.length);
+			      secondChars = tmparray;
+			      secondChars[secondPos] = (char)intValue;
+			    }
+			    secondPos++;
+
+			    i += 5;
+			  } else {
+			    try {
+			      secondChars[secondPos] = chars[i];
+			    } catch (ArrayIndexOutOfBoundsException abe) {
+			      char[] tmparray = 
+				new char[secondChars.length*2];
+			      System.arraycopy(secondChars, 0,
+					       tmparray, 0,
+					       secondChars.length);
+			      secondChars = tmparray;
+			      secondChars[secondPos] = chars[i];
+			    }
+			    secondPos++;
+			  }
                         }
                         
                     // convert the byte array into a String

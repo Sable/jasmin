@@ -13,6 +13,9 @@ TARGET=${JASMINROOT}/classes
 
 if [ ! -d ${TARGET} ]; then
     mkdir ${TARGET}
+else
+    rm -fr ${TARGET}
+    mkdir ${TARGET}
 fi
 
 

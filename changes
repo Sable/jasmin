@@ -1,5 +1,8 @@
 Jasmin Revision History                                 Sable Research Group
 
+May 4, 2002 - Release sable-1.1.4 [Feng Qian]
+    - fixed jasmin.Scanner to allow an attribute string longer than 65536.  
+
 May 3, 2001 - Release sable-1.1 [Patrick Lam, Feng Qian]
     - No changes except for highjacking the versioning scheme.
 
