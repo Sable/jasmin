@@ -52,7 +52,8 @@ public class InnerClassAttr
         throws IOException, jasError {
     
         out.writeShort(e.getCPIndex(attr));
-        out.writeInt(size());
+        //out.writeInt(size());
+        out.writeInt(2+8*list.size());
         out.writeShort(list.size());
         Iterator it = list.iterator();
         while(it.hasNext()){

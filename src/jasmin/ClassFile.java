@@ -729,7 +729,8 @@ public class ClassFile {
         if (inner_class_attr == null){
             inner_class_attr = new InnerClassAttr();
         }
-        inner_class_attr.addInnerClassSpec(new InnerClassSpecAttr(new ClassCP(inner_class_name), new ClassCP(outer_class_name), new AsciiCP(inner_name), access));
+        //inner_class_attr.addInnerClassSpec(new InnerClassSpecAttr(new ClassCP(inner_class_name), new ClassCP(outer_class_name), new AsciiCP(inner_name), access));
+        inner_class_attr.addInnerClassSpec(new InnerClassSpecAttr(inner_class_name, outer_class_name, inner_name, access));
         
     }
    

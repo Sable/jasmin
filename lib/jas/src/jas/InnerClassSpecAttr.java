@@ -12,22 +12,26 @@ import java.util.*;
 
 public class InnerClassSpecAttr {
     
-    ClassCP inner_class_name;
-    ClassCP outer_class_name;
-    AsciiCP inner_name;
+    String inner_class_name;
+    String outer_class_name;
+    String inner_name;
     short access;
 
     void resolve(ClassEnv e){
-        e.addCPItem(inner_class_name);
-        e.addCPItem(outer_class_name);
-        e.addCPItem(inner_name);
+        e.addCPItem(new ClassCP(inner_class_name));
+        if (!outer_class_name.equals("null")){
+            e.addCPItem(new ClassCP(outer_class_name));
+        }
+        if (!inner_name.equals("null")){
+            e.addCPItem(new AsciiCP(inner_name));
+        }
     }
 
     /**
     * Note: An inner class attr is associated with a <em>class</em>, so you
     * need to create a new InnerClassAttr for each class you create
     */
-    public InnerClassSpecAttr(ClassCP a, ClassCP b, AsciiCP c, short d) { //
+    public InnerClassSpecAttr(String a, String b, String c, short d) { //
         inner_class_name = a;
         outer_class_name = b;
         inner_name = c;
@@ -43,9 +47,19 @@ public class InnerClassSpecAttr {
         throws IOException, jasError
         {
         
-            out.writeShort(e.getCPIndex(inner_class_name));
-            out.writeShort(e.getCPIndex(outer_class_name));
-            out.writeShort(e.getCPIndex(inner_name));
+            out.writeShort(e.getCPIndex(new ClassCP(inner_class_name)));
+            if (outer_class_name.equals("null")){
+                out.writeShort(0);
+            }
+            else {
+                out.writeShort(e.getCPIndex(new ClassCP(outer_class_name)));
+            }
+            if (inner_name.equals("null")){
+                out.writeShort(0);
+            }
+            else {
+                out.writeShort(e.getCPIndex(new AsciiCP(inner_name)));
+            }
             out.writeShort(access);
             /*out.writeShort(e.getCPIndex(attr));
     out.writeInt(2 + 4*(pc.size()));
