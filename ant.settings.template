@@ -2,3 +2,8 @@
 # either classes dir or jar - note polyglot comes with cup-classes
 java_cup.jar=${user.home}/cup-classes/
 
+# Location in which to generate Jasmin release tarballs
+release.loc=lib
+
+# Version of Jasmin for tagging tarballs
+jasmin.version=2.1.1
