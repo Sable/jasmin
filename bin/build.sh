@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/sh
 
 # Usage: build.sh [--refresh] to compile and install all of the jasmin and jas stuff.
 #  This script must be run in the base directory of the jasmin directory tree.

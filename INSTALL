@@ -3,9 +3,9 @@ updated May 3, 2001 - PL
 
 How to compile jasmin:
 
-The UNIX shell-script bin/compile_all.sh should be able to recompile
-all classes under any JDK.  A user can compile each constituent
-package manually by following below instructions.
+The UNIX shell-script bin/compile_all.sh ('sh ./bin/compile_all.sh') 
+should be able to recompile all classes under any JDK.  A user can 
+compile each constituent package manually by following below instructions.
 
 - compile jas (following instructions are from lib/jas/src/compile.sh)
   * from lib/jas/src directory,
