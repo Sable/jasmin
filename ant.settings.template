@@ -1,0 +1,4 @@
+## Location of Java Cup classes jar file to link Jasmin against
+# either classes dir or jar - note polyglot comes with cup-classes
+java_cup.jar=${user.home}/cup-classes/
+

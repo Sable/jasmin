@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+
+<project default="compile">
+    <property file="ant.settings"/>
+    <target name="settings">
+        <fail
+            message="Please copy ant.settings.template to ant.settings, and set the variables in it."
+            unless="java_cup.jar"
+        />
+    </target>
+
+    <target name="compile" depends="settings,scm">
+        <javac
+            destdir="classes"
+            classpath="classes:${java_cup.jar}"
+            debug="true"
+        >
+            <src path="src"/>
+        </javac>
+    </target>
+
+    <target name="scm" depends="autogen_run">
+        <javac
+            destdir="classes"
+            classpath="classes"
+            debug="true"
+            deprecation="true"
+        >
+            <src path="lib/jas/src/scm"/>
+        </javac>
+    </target>
+
+    <target name="autogen_compile" depends="jas">
+        <javac
+            destdir="classes"
+            classpath="classes"
+            debug="true"
+        >
+            <src path="lib/jas/src/scm/autogen/"/>
+        </javac>
+    </target>
+    
+    <target name="autogen_run" depends="autogen_compile">
+        <java
+            classname="autogen"
+            dir="lib/jas/src/scm"
+            classpath="classes"
+            fork="true"
+        >
+        </java>
+    </target>
+    
+    <target name="jas">
+        <javac
+            destdir="classes"
+            optimize="true"
+            debug="true"
+        >
+            <src path="lib/jas/src/jas"/>
+        </javac>
+    </target>
+    
+</project>

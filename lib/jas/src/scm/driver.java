@@ -14,12 +14,17 @@ class driver implements RuntimeConstants
     StreamTokenizer inp;
 
     if (argv.length == 0)
-      inp = new StreamTokenizer(System.in);
+        inp = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));
+      //inp = new StreamTokenizer(System.in);
     else
       inp =
-        new StreamTokenizer
+        new StreamTokenizer(new BufferedReader(new InputStreamReader
         (new BufferedInputStream
-         (new FileInputStream(argv[0])));
+         (new FileInputStream(argv[0])))));
+      //inp =
+      //  new StreamTokenizer
+      //  (new BufferedInputStream
+      //   (new FileInputStream(argv[0])));
 
     inp.resetSyntax();
     inp.wordChars('a', 'z');
