@@ -77,5 +77,6 @@ abstract class ReservedWords {
         reserved_words.put("native", new Symbol(sym.NATIVE));
         reserved_words.put("interface", new Symbol(sym.INTERFACE));
         reserved_words.put("abstract", new Symbol(sym.ABSTRACT));
+        reserved_words.put("strictfp", new Symbol(sym.STRICTFP));
     }
 }

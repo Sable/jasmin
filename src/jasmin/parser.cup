@@ -89,7 +89,7 @@ terminal token
 
     // access types
     ABSTRACT, FINAL, INTERFACE, NATIVE, PRIVATE, PROTECTED, PUBLIC, STATIC,
-    SYNCHRONIZED, TRANSIENT, VOLATILE,
+    SYNCHRONIZED, TRANSIENT, VOLATILE, STRICTFP,
 
     // complex instructions
     LOOKUPSWITCH, TABLESWITCH, DEFAULT,
@@ -200,6 +200,8 @@ access_item ::=
     INTERFACE    {: access_val |= RuntimeConstants.ACC_INTERFACE; :}
     |
     ABSTRACT     {: access_val |= RuntimeConstants.ACC_ABSTRACT; :}
+    |
+    STRICTFP     {: access_val |= RuntimeConstants.ACC_STRICTFP; :}
   ;
 
 // ---- Superclass specification

@@ -36,6 +36,7 @@ public interface RuntimeConstants {
     public static final int ACC_NATIVE = 256;
     public static final int ACC_INTERFACE = 512;
     public static final int ACC_ABSTRACT = 1024;
+    public static final int ACC_STRICTFP = 2048;
     public static final int ACC_SUPER = 32;
 
     // types for newarray

@@ -84,6 +84,8 @@ class driver implements RuntimeConstants
                      new Selfrep(ACC_INTERFACE));
     global.definevar(Symbol.intern("acc-abstract"),
                      new Selfrep(ACC_ABSTRACT));
+    global.definevar(Symbol.intern("acc-strictfp"),
+                     new Selfrep(ACC_STRICTFP));
 
                                 // Pull in auto generated stuff
     AutoInit.fillit(global);
