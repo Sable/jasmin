@@ -69,10 +69,40 @@ public class ClassFile {
 
     int codeSize;
     int lastInstSize;
+    Method currentMethod;
+    Var currentField;
+
+
 
 
     public int getPc() { return codeSize;}
     public int getLastInstSize() { return lastInstSize;}
+
+    public void addGenericAttrToMethod(String name, byte[] value)
+    {
+	if(currentMethod == null) 
+	    System.err.println("Error: no field in scope to add attribute onto.");
+	else {
+	    class_env.addCPItem(new AsciiCP(name));
+	    currentMethod.addGenericAttr(new GenericAttr(name, value));
+	}
+    }
+
+    public void addGenericAttrToField(String name, byte[] value)
+    {
+	if(currentField == null) 
+	    System.err.println("Error: no field in scope to add attribute onto.");
+	else {
+	    class_env.addCPItem(new AsciiCP(name));
+	    currentField.addGenericAttr(new GenericAttr(name, value));
+	}
+    }
+
+    public void addGenericAttrToClass(GenericAttr g)
+    {
+	class_env.addGenericAttr(g);
+    }
+
 
 
     static final String BGN_METHOD = "bgnmethod:";
@@ -143,11 +173,14 @@ public class ClassFile {
     //
     void addField(short access, String name,
                                 String sig, Object value) {
+
+
         if (value == null) {
             // defining a field which doesn't have an initial value
-
-            class_env.addField(new Var(access, new AsciiCP(name),
-                new AsciiCP(sig), null));
+	    currentField =
+		new Var(access, new AsciiCP(name),
+			new AsciiCP(sig), null);
+	    class_env.addField(currentField);
 
         } else {
             // defining a field with an initial value...
@@ -168,8 +201,11 @@ public class ClassFile {
             }
 
             // add the field
-            class_env.addField(new Var(access, new AsciiCP(name),
-                               new AsciiCP(sig), new ConstAttr(cp)));
+	    currentField = 
+            new Var(access, new AsciiCP(name),
+                               new AsciiCP(sig), new ConstAttr(cp));
+	    
+	    class_env.addField(currentField);
         }
     }
 
@@ -210,9 +246,13 @@ public class ClassFile {
                 code.setLineTable(line_table);
             }
         }
+	
+	currentMethod  =  new Method(method_access, new AsciiCP(method_name),
+					    new AsciiCP(method_signature), code, except_attr);
+    
 
-        class_env.addMethod( new Method(method_access, new AsciiCP(method_name), new AsciiCP(method_signature),
-					code, except_attr));
+	class_env.addMethod( currentMethod);
+	
 	
 	
         // clear method state variables
@@ -224,6 +264,7 @@ public class ClassFile {
         catch_table = null;
         line_table  = null;
         var_table   = null;
+	
 	System.out.println("Code size: " + codeSize);
 	codeSize = 0;
 	lastInstSize = 0;

@@ -42,6 +42,11 @@ abstract class ReservedWords {
         reserved_words.put(".throws", new token(sym.DTHROWS));
         reserved_words.put(".var", new token(sym.DVAR));
 
+	reserved_words.put(".class_attribute", new token(sym.DCLASS_ATTR));	
+
+	//	reserved_words.put(".method_attribute", new token(sym.DMETHOD_ATTR));
+       reserved_words.put(".code_attribute", new token(sym.DCODE_ATTR));
+	
         // reserved_words used in Jasmin directives
         reserved_words.put("from", new token(sym.FROM));
         reserved_words.put("method", new token(sym.METHOD));

@@ -73,7 +73,11 @@ scan with {:
 terminal token
     // Directives (words beginning with a '.')
     DCATCH, DCLASS, DEND, DFIELD, DLIMIT, DLINE, DMETHOD, DSET, DSUPER,
-    DSOURCE, DTHROWS, DVAR, DIMPLEMENTS, DINTERFACE, DMETHOD_ATTR,
+    DSOURCE, DTHROWS, DVAR, DIMPLEMENTS, DINTERFACE,
+
+   // Attributes
+	DCODE_ATTR,
+
 
     // keywords for directives
     TO, USING, IS, FROM, METHOD,
@@ -105,7 +109,7 @@ non terminal symbol
        lookup_args, lookup_default, lookup_entry, lookup_list, method_list,
        method_spec, methods, set_expr, simple_instruction, source_spec,
        statement, statements, stmnt, super_spec, table, table_args, line_expr,
-       table_default, table_entry, table_list, throws_expr, var_expr, mtd_attr_expr
+       table_default, table_entry, table_list, throws_expr, var_expr, code_attr_expr
     ;
 
 non terminal int_token access;
@@ -319,22 +323,28 @@ directive ::=
     DCATCH catch_expr
     |
     DSET set_expr
-    |
-    DMETHOD_ATTR mtd_attr_expr	
+  |
+  DCODE_ATTR code_attr_expr   
   ;
 
 
-mtd_attr_expr ::=
-	Word:w Word:v
-	  {:
-	       byte[] pc = new byte[2];
-		int pcValue = classFile.getPc(); 
-		pc[1] = (byte)( pcValue & 0x000000ff);
-		pc[0] = (byte) (pcValue >> 8);
-		classFile._getCode().addGenericAttr(new GenericAttr(w.str_val, pc));	
-	  :}
 
+code_attr_expr ::=
+ Word:w Word:v
+          {:
+                byte[] data = soot.Base64.decode(v.str_val.toCharArray());
+                byte[] pc = soot.CodeAttribute.convertPcToByteArray(classFile.getPc() - classFile.getLastInstSize());
+                data[0] = pc[0];
+                data[1] = pc[1];
+
+                classFile._getCode().addGenericAttr(new GenericAttr(w.str_val, data));
+          :}
 ;
+
+
+
+
+
 
 //
 // .var <num> is <name> <sig> from StartLab to EndLab
@@ -347,7 +357,7 @@ var_expr ::=
         :}
     |
     Int:reg IS Word:name Word:sig
-        {:	     
+        {:
              classFile.addVar(null, null, name.str_val, sig.str_val, reg.int_val);
         :}
 ;
@@ -371,15 +381,6 @@ limit_expr ::=
                           + w.str_val);
       :}
 ;
-
-
-
-
-
-
-
-
-
 
 // .line <num>
 line_expr ::=
