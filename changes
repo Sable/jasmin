@@ -1,14 +1,20 @@
-Jasmin Revision History                                     Jonathan Meyer
+Jasmin Revision History                                 Sable Research Group
+
+May 3, 2001 - Release sable-1.1 [Patrick Lam, Feng Qian]
+    - No changes except for highjacking the versioning scheme.
 
 Apr 17, 2001 - Release 1.06-s11 [Patrick Lam, Feng Qian]
-    - upgrade java_cup from 0.9d to 0.10j
-	- adjust code attribute table format, add a table size before 
+    - upgraded java_cup from 0.9d to 0.10j (plam); jasmin now
+          compiles properly under recent JDKs.
+    - adjust code attribute table format, add a table size before 
 	  attribute table. Code_attribute will have same head format as
 	  LineNumberTable attribute.
+    - Correctness patch for emitting constant numbers due to 
+          Brian Demsky (bdemsky@mit.edu).
 
 Apr 2, 2001 - Release 1.06-s10  [Feng Qian (fqian@sable.mcgill.ca)]
     - fix-up the grammar bug dealing with class, method, and field attributes,
-      which is reported by jmunsin@abo.fi
+      reported by jmunsin@abo.fi
 
 Jan 25, 2001 - Release 1.06-s9 [Patrick Lam (plam@sable.mcgill.ca)]
     - Realized that compilation would be a lot simpler if 
@@ -46,6 +52,8 @@ Changes:
 
   Changed the grammar to fix some ambiguities
 	- Raja Vallee-Rai (kor@sable.mcgill.ca)
+
+Jasmin Revision History                                     Jonathan Meyer
 
 11 Apr 97 - Release 1.06.
 
