@@ -115,10 +115,10 @@ non terminal symbol
        method_spec, methods, set_expr, simple_instruction, source_spec,
        statement, statements, stmnt, super_spec, table, table_args, line_expr,
        table_default, table_entry, table_list, throws_expr, var_expr, 
-	code_attr_expr, 
-	class_attrs, class_attr_list,  class_attr_spec,
-	method_attrs, method_attr_list,  method_attr_spec,
-	field_attrs, field_attr_list,  field_attr_spec	
+	   code_attr_expr, 
+	   class_attrs, class_attr_list,  class_attr_spec,
+	   method_item, method_attrs, method_attr_list,  method_attr_spec,
+	   field_item, field_attrs, field_attr_list,  field_attr_spec	
     ;
 
 non terminal int_token access;
@@ -227,7 +227,9 @@ implements_spec ::= DIMPLEMENTS classname:name SEP
 
 fields ::= field_list | /* empty */ ;
 
-field_list ::= field_list field_spec field_attrs | field_spec field_attrs;
+field_list ::= field_list field_item | field_item;
+
+field_item ::= field_spec field_attrs | field_spec;
 
 field_spec ::=
     DFIELD access:a Str:name Word:sig optional_default:v SEP
@@ -236,14 +238,6 @@ field_spec ::=
                             v.var_val);
         :}
    ;
-//    |
- //   DFIELD access:a Str:name Word:sig optional_default:v SEP
- //       {:
- //           classFile.addField((short)a.int_val, name.str_val, sig.str_val,
- //                           v.var_val);
- //       :}
-
-//  ;
 
 // default value for a field
 optional_default ::=
@@ -265,7 +259,9 @@ item ::=
 
 methods ::= method_list | /* empty */;
 
-method_list ::= method_list method_spec method_attrs | method_spec method_attrs;
+method_list ::= method_list method_item | method_item;
+
+method_item ::= method_spec method_attrs | method_spec;
 
 method_spec ::=
     defmethod
@@ -571,7 +567,7 @@ class_attr_spec ::= DCLASS_ATTR  Word:w Str:v SEP
           :}
 ;
 	
-method_attrs ::= method_attr_list | /* */;
+method_attrs ::= method_attr_list; 
 method_attr_list ::= method_attr_list method_attr_spec | method_attr_spec;
 method_attr_spec ::= DMETHOD_ATTR  Word:w Str:v SEP
           {:
@@ -581,7 +577,7 @@ method_attr_spec ::= DMETHOD_ATTR  Word:w Str:v SEP
 ;
 
 	
-field_attrs ::= field_attr_list | /* */;
+field_attrs ::= field_attr_list; 
 field_attr_list ::= field_attr_list field_attr_spec | field_attr_spec;
 field_attr_spec ::= DFIELD_ATTR  Word:w Str:v SEP
           {:
