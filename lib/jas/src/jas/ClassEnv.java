@@ -27,6 +27,7 @@ public class ClassEnv implements RuntimeConstants
   SourceAttr source;
   Vector generic;
   boolean hasSuperClass;
+  InnerClassAttr inner_class_attr;
 
   public ClassEnv()
   {
@@ -183,7 +184,10 @@ public class ClassEnv implements RuntimeConstants
     if (source != null)
       { numExtra = 1; }
     numExtra += generic.size();
-
+    if (inner_class_attr != null) {
+        numExtra++;
+    }
+    
     out.writeShort(numExtra);
     if (source != null)
       { source.write(this, out); }
@@ -192,6 +196,11 @@ public class ClassEnv implements RuntimeConstants
 	GenericAttr gattr = (GenericAttr)gen.nextElement();
 	gattr.write(this, out);
       }
+    
+    // inner class attr
+    if (inner_class_attr != null){
+        inner_class_attr.write(this, out);
+    }
     out.flush();
   }
 
@@ -237,6 +246,21 @@ public class ClassEnv implements RuntimeConstants
     methods.addElement(x);
   }
 
+  /*public void addInnerClassAttr(InnerClassAttr attr){
+    //attr.resolve(this);
+    inner_class_attr = attr; 
+    
+  }
+  public void addInnerClassSpecAttr(InnerClassSpecAttr attr){
+    inner_class_attr.addInnerClassSpec(attr);
+    
+  }*/
+  
+  public void finishInnerClassAttr(InnerClassAttr attr){
+      inner_class_attr = attr;  
+      inner_class_attr.resolve(this);
+  }
+  
   /**
    * Add an attribute specifying the name of the source file
    * for the class
@@ -281,6 +305,7 @@ public class ClassEnv implements RuntimeConstants
       if (cpe_index == null) {
 	     throw new jasError("Internal error: CPE index has not been generated");
       }
+
     Integer idx = (Integer)(cpe_index.get(cp.getUniq()));
     // LJH -----------------------------
     // System.out.println("Getting idx " + idx);

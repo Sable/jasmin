@@ -58,6 +58,7 @@ public class ClassFile {
     LocalVarTableAttr var_table;
     LineTableAttr line_table;
     CodeAttr  code;
+    InnerClassAttr inner_class_attr;
     Hashtable labels;
 
     int line_label_count, line_num;
@@ -721,6 +722,21 @@ public class ClassFile {
     }
 
 
+    void addInnerClassAttr(){
+    }
+
+    void addInnerClassSpec(String inner_class_name, String outer_class_name, String inner_name, short access){
+        if (inner_class_attr == null){
+            inner_class_attr = new InnerClassAttr();
+        }
+        inner_class_attr.addInnerClassSpec(new InnerClassSpecAttr(new ClassCP(inner_class_name), new ClassCP(outer_class_name), new AsciiCP(inner_name), access));
+        
+    }
+   
+    void endInnerClassAttr(){
+        class_env.finishInnerClassAttr(inner_class_attr);
+    }
+    
     // PUBLIC API TO JASMIN:
 	
     /** Makes a new ClassFile object, used to represent a Java class file.

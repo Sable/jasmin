@@ -80,8 +80,8 @@ terminal token
     DCATCH, DCLASS, DEND, DFIELD, DLIMIT, DLINE, DMETHOD, DSET, DSUPER,
     DNOSUPER, DSOURCE, DTHROWS, DVAR, DIMPLEMENTS, DINTERFACE,
 
-   // Attributes
-	DCODE_ATTR, DCLASS_ATTR, DFIELD_ATTR, DMETHOD_ATTR,
+    // Attributes
+	DCODE_ATTR, DCLASS_ATTR, DFIELD_ATTR, DMETHOD_ATTR, DINNER_CLASS_ATTR, DINNER_CLASS_SPEC_ATTR,
 
 
     // keywords for directives
@@ -118,7 +118,9 @@ nonterminal
 	   code_attr_expr, 
 	   class_attrs, class_attr_list,  class_attr_spec,
 	   method_item, method_attrs, method_attr_list,  method_attr_spec,
-	   field_item, field_attrs, field_attr_list,  field_attr_spec	
+	   field_item, field_attrs, field_attr_list,  field_attr_spec,
+       inner_class_attr, inner_class_attr_list, inner_class_attr_spec,
+       end_inner_class_attr
     ;
 
 nonterminal Short access;
@@ -130,7 +132,8 @@ jas_file ::=
         class_spec
         super_spec
 	implements
-	class_attrs	
+	class_attrs
+    inner_class_attr
         fields
         methods
     ;
@@ -601,7 +604,24 @@ field_attr_spec ::= DFIELD_ATTR  Word:w Str:v SEP
           :}
 ;
 
-
+inner_class_attr ::= DINNER_CLASS_ATTR SEP inner_class_attr_list end_inner_class_attr
+    {:
+        classFile.addInnerClassAttr();
+    :}
+    |
+    /* empty*/
+;
+inner_class_attr_list ::= inner_class_attr_list inner_class_attr_spec | inner_class_attr_spec;
+inner_class_attr_spec ::= DINNER_CLASS_SPEC_ATTR Str:a Str:b Str:c access:d DEND DINNER_CLASS_SPEC_ATTR SEP
+    {:
+        classFile.addInnerClassSpec(a, b, c, (short)d.intValue());
+    :}
+;
+end_inner_class_attr ::= DEND DINNER_CLASS_ATTR SEP
+    {:
+        classFile.endInnerClassAttr();
+    :}
+;
 
 
 
