@@ -19,7 +19,7 @@ public class Main {
     /**
      * The Jasmin version
      */
-    public static final String version = "v1.06-s10";
+    public static final String version = "v1.06-s11";
 
     /**
      * Called to assemble a single file.
