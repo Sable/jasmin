@@ -29,6 +29,7 @@ public class ClassEnv implements RuntimeConstants
   boolean hasSuperClass;
   InnerClassAttr inner_class_attr;
   boolean classSynth;
+  SyntheticAttr synthAttr;
   
   public ClassEnv()
   {
@@ -203,9 +204,10 @@ public class ClassEnv implements RuntimeConstants
     
     // synthetic attr
     if (isClassSynth()){
-        SyntheticAttr sa = new SyntheticAttr();
-        sa.resolve(this);
-        sa.write(this, out);
+        //System.out.println("class is synthetic");
+        //SyntheticAttr sa = new SyntheticAttr();
+        //sa.resolve(this);
+        synthAttr.write(this, out);
     }
     // inner class attr
     if (inner_class_attr != null){
@@ -227,15 +229,19 @@ public class ClassEnv implements RuntimeConstants
   {
     String uniq = cp.getUniq();
     CP intern;
-
+    //System.out.println("adding CP: "+uniq);
+    
     if ((intern = (CP)(cpe.get(uniq))) == null)
       {
 				// add it
 	cpe.put(uniq, cp);
+    //System.out.println("added uniq to cpe: "+cpe.get(uniq));
 				// resolve it so it adds anything
 				// which it depends on
 	cp.resolve(this);
+    
       }
+    //System.out.println("cp: "+cp);
   }
 
   /**
@@ -259,6 +265,8 @@ public class ClassEnv implements RuntimeConstants
  
   public void setClassSynth(boolean b){
     classSynth = b;
+    synthAttr = new SyntheticAttr();
+    synthAttr.resolve(this);
   }
 
   public boolean isClassSynth(){
@@ -314,10 +322,12 @@ public class ClassEnv implements RuntimeConstants
       if (cpe_index == null) {
 	     throw new jasError("Internal error: CPE index has not been generated");
       }
-
+    //System.out.println("cp uniq: "+cp.getUniq());
+    //System.out.println("cpe_index: "+cpe_index);
+    
     Integer idx = (Integer)(cpe_index.get(cp.getUniq()));
     // LJH -----------------------------
-    // System.out.println("Getting idx " + idx);
+     //System.out.println("Getting idx " + idx);
     if (idx == null)
       throw new jasError("Item " + cp + " not in the class");
     return (idx.intValue());
