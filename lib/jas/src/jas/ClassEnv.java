@@ -10,8 +10,8 @@ import java.util.Vector;
  * This is the place where all information about the class to
  * be created resides.
  *
- * @author $Author: plam $
- * @version $Revision: 1.3 $
+ * @author $Author: fqian $
+ * @version $Revision: 1.1 $
  */
 
 public class ClassEnv implements RuntimeConstants
@@ -273,15 +273,19 @@ public class ClassEnv implements RuntimeConstants
     methods.addElement(m);
   }
 
-  short getCPIndex(CP cp)
+  // LJH changed from short to int so that wide check works,
+  // otherwise nums > 32K become negative and then not made wide
+  /* short */ int getCPIndex(CP cp)
     throws jasError
   {
       if (cpe_index == null) {
 	     throw new jasError("Internal error: CPE index has not been generated");
       }
     Integer idx = (Integer)(cpe_index.get(cp.getUniq()));
+    // LJH -----------------------------
+    // System.out.println("Getting idx " + idx);
     if (idx == null)
       throw new jasError("Item " + cp + " not in the class");
-    return ((short)(idx.intValue()));
+    return (idx.intValue());
   }
 }

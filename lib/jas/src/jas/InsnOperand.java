@@ -161,7 +161,9 @@ class LdcOperand extends InsnOperand implements RuntimeConstants
     else
       {
                                 // Should we promote it?
-	  int idx = ce.getCPIndex(cpe);
+        int idx = ce.getCPIndex(cpe);
+        // LJH
+        // System.out.println("getting idx in size: " + idx);
         if (idx > 255)
           {
             wide = true;
@@ -174,12 +176,17 @@ class LdcOperand extends InsnOperand implements RuntimeConstants
   LdcOperand(Insn s, CP cpe) { source = s; this.cpe = cpe; wide = true; }
   LdcOperand(Insn s, CP cpe, boolean wide)
   { source = s; this.cpe = cpe; this.wide = wide; }
+
   void resolve(ClassEnv e)
   { e.addCPItem(cpe); }
+
   void write(ClassEnv e, CodeAttr ce, DataOutputStream out)
     throws IOException, jasError
   {
     int idx = e.getCPIndex(cpe);
+    // LJH
+    // System.out.println("Writing " + idx + " which as a short is " +
+    //                        ((short) idx) + " and is " + wide);
     if (wide)
       { out.writeShort((short) idx); }
     else
