@@ -3,6 +3,7 @@
  > Purpose:     Runs Jasmin, parsing any command line arguments
  > Author:      Jonathan Meyer, 10 July 1996
  */
+// Modifications Copyright (C) 2004 Ondrej Lhotak
 
 
 package jasmin;
@@ -15,6 +16,40 @@ import jas.jasError;
  * method, as well as a few other useful odds and ends.
  */
 public class Main {
+    public static void assemble(InputStream in, OutputStream out, boolean number_lines) {
+        ClassFile classFile = new ClassFile();
+
+        try {
+            InputStream inp = new BufferedInputStream(in);
+            classFile.readJasmin(inp, "Jasmin", number_lines);
+            inp.close();
+
+            // if we got some errors, don't output a file - just return.
+            if (classFile.errorCount() > 0) {
+                System.err.println("Jasmin: Found "
+                        + classFile.errorCount() + " errors");
+                return;
+            }
+
+            classFile.write(out);
+            out.flush();
+        } catch (java.io.FileNotFoundException e) {
+            System.err.println("Jasmin: file not found");
+            System.exit(-1);
+        } catch (jasError e) {
+            classFile.report_error("JAS Error " + e.getMessage());
+            e.printStackTrace();
+        } catch (Exception e) {
+            classFile.report_error("Jasmin: exception - <" +
+                    e.getClass().getName() + "> " + e.getMessage() +
+                    ".");
+            e.printStackTrace();
+        }
+        if (classFile.errorCount() > 0) {
+            System.err.println("Jasmin: Found "
+                    + classFile.errorCount() + " errors");
+        }
+    }
 
     /**
      * The Jasmin version
@@ -88,6 +123,7 @@ public class Main {
             System.exit(-1);
         } catch (jasError e) {
             classFile.report_error("JAS Error " + e.getMessage());
+            e.printStackTrace();
         } catch (Exception e) {
   	    classFile.report_error(fname + ": exception - <" +
                               e.getClass().getName() + "> " + e.getMessage() +
