@@ -173,19 +173,29 @@ public class ClassFile {
         class_env.addInterface(new ClassCP(name));
     }
 
+    void addField(short access, String name, String sig, Object value){
+        addField(access, name, sig, value, null);
+    }
 
     //
     // called by the .field directive
     //
     void addField(short access, String name,
-                                String sig, Object value) {
+                                String sig, Object value, String synth) {
 
 
         if (value == null) {
             // defining a field which doesn't have an initial value
-	    currentField =
+            if (synth == null){
+                currentField = new Var(access, new AsciiCP(name), new AsciiCP(sig), null);
+            }
+            else {
+                currentField = new Var(access, new AsciiCP(name), new AsciiCP(sig), null, new SyntheticAttr());
+            }
+        
+	    /*currentField =
 		new Var(access, new AsciiCP(name),
-			new AsciiCP(sig), null);
+			new AsciiCP(sig), null);*/
 	    class_env.addField(currentField);
 
         } else {
@@ -209,10 +219,16 @@ public class ClassFile {
             }
 
             // add the field
+            if (synth == null){
 	    currentField = 
             new Var(access, new AsciiCP(name),
                                new AsciiCP(sig), new ConstAttr(cp));
-	    
+	        }
+            else {
+	    currentField = 
+            new Var(access, new AsciiCP(name),
+                               new AsciiCP(sig), new ConstAttr(cp), new SyntheticAttr());
+            }
 	    class_env.addField(currentField);
         }
     }

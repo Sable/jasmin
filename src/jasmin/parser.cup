@@ -81,7 +81,7 @@ terminal token
     DNOSUPER, DSOURCE, DTHROWS, DVAR, DIMPLEMENTS, DINTERFACE,
 
     // Attributes
-	DCODE_ATTR, DCLASS_ATTR, DFIELD_ATTR, DMETHOD_ATTR, DINNER_CLASS_ATTR, DINNER_CLASS_SPEC_ATTR,
+	DCODE_ATTR, DCLASS_ATTR, DFIELD_ATTR, DMETHOD_ATTR, DINNER_CLASS_ATTR, DINNER_CLASS_SPEC_ATTR, DSYNTHETIC,
 
 
     // keywords for directives
@@ -121,6 +121,7 @@ nonterminal
 	   field_item, field_attrs, field_attr_list,  field_attr_spec,
        inner_class_attr, inner_class_attr_list, inner_class_attr_spec,
        end_inner_class_attr
+
     ;
 
 nonterminal Short access;
@@ -246,6 +247,11 @@ field_spec ::=
         {:
             classFile.addField((short)a.intValue(), name, sig,
                             v);
+        :}
+   |
+   DFIELD access:a Str:name Word:sig optional_default:v DSYNTHETIC SEP 
+        {:
+            classFile.addField((short)a.intValue(), name, sig, v, "synth");
         :}
    ;
 

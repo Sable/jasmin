@@ -19,7 +19,8 @@ public class Var
   short var_acc;
   CP name, sig;
   ConstAttr const_attr;
-
+  SyntheticAttr synth_attr = null;
+  
     Vector genericAttrs = new Vector();
     
 
@@ -38,6 +39,14 @@ public class Var
     this.sig = sig; const_attr = cattr;
   }
 
+  public Var(short vacc, CP name, CP sig, ConstAttr cattr, SyntheticAttr sattr){
+    var_acc = vacc; 
+    this.name = name;
+    this.sig = sig; 
+    const_attr = cattr;
+    synth_attr = sattr;
+  }
+  
     public void addGenericAttr(GenericAttr g)
     {
         genericAttrs.addElement(g);
@@ -52,6 +61,9 @@ public class Var
     e.addCPItem(sig);
     if (const_attr != null)
       { const_attr.resolve(e); }
+    if (synth_attr != null){
+        synth_attr.resolve(e);
+    }
   }
 
   void write(ClassEnv e, DataOutputStream out)
@@ -62,10 +74,21 @@ public class Var
     out.writeShort(e.getCPIndex(sig));
     int attrCnt = genericAttrs.size();
 
-    if (const_attr != null)
+    if (const_attr != null) attrCnt++;
+    if (synth_attr != null) attrCnt++;
+    
+    out.writeShort(attrCnt);
+    
+    if (const_attr != null){
+        const_attr.write(e, out);
+    }
+    if (synth_attr != null){
+        synth_attr.write(e, out);
+    }
+    /*if (const_attr != null)
       { out.writeShort(attrCnt +1); const_attr.write(e, out); }
     else
-      { out.writeShort(attrCnt); }
+      { out.writeShort(attrCnt); }*/
 
     for(Enumeration enu = genericAttrs.elements(); enu.hasMoreElements();) {
         ((GenericAttr)enu.nextElement()).write(e, out);

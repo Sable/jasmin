@@ -47,13 +47,15 @@ abstract class ReservedWords {
         reserved_words.put(".no_super", new Symbol(sym.DNOSUPER));
         reserved_words.put(".throws", new Symbol(sym.DTHROWS));
         reserved_words.put(".var", new Symbol(sym.DVAR));
-
+        
 	reserved_words.put(".class_attribute", new Symbol(sym.DCLASS_ATTR));	
         reserved_words.put(".field_attribute", new Symbol(sym.DFIELD_ATTR));
         reserved_words.put(".method_attribute", new Symbol(sym.DMETHOD_ATTR));
         reserved_words.put(".code_attribute", new Symbol(sym.DCODE_ATTR));
         reserved_words.put(".inner_class_attr", new Symbol(sym.DINNER_CLASS_ATTR));	
         reserved_words.put(".inner_class_spec_attr", new Symbol(sym.DINNER_CLASS_SPEC_ATTR));	
+        reserved_words.put(".synthetic", new Symbol(sym.DSYNTHETIC));	
+        
         // reserved_words used in Jasmin directives
         reserved_words.put("from", new Symbol(sym.FROM));
         reserved_words.put("method", new Symbol(sym.METHOD));
