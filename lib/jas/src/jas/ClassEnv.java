@@ -11,7 +11,7 @@ import java.util.Vector;
  * be created resides.
  *
  * @author $Author: plam $
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 
 public class ClassEnv implements RuntimeConstants
@@ -49,12 +49,8 @@ public class ClassEnv implements RuntimeConstants
    * a ClassCP)
    */
   public void setClass(CP name)
-  { 
-    hasSuperClass = true;   
-    super_class = name; 
-    addCPItem(name);
-  }
-
+  {  this_class = name; addCPItem(name); }
+  
   /**
    * Define this class to have no superclass.  Should only ever
    * be used for java.lang.Object
@@ -70,7 +66,11 @@ public class ClassEnv implements RuntimeConstants
    * a ClassCP)
    */
   public void setSuperClass(CP name)
-  {  super_class = name; addCPItem(name); }
+  {
+    hasSuperClass = true;   
+    super_class = name; 
+    addCPItem(name);
+  }
 
   /**
    * Set the class access for this class. Constants understood
