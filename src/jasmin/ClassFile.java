@@ -213,7 +213,7 @@ public class ClassFile {
                 cp = new FloatCP(((Number)value).floatValue());
             } else if (sig.equals("D")) {
                 cp = new DoubleCP(((Number)value).doubleValue());
-            } else if (sig.equals("L")) {
+            } else if (sig.equals("J")) {
                 cp = new LongCP(((Number)value).longValue());
             } else if (sig.equals("Ljava/lang/String;")) {
                cp = new StringCP((String)value);
