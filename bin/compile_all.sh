@@ -26,7 +26,8 @@ fi
 (cd lib/jas/src; sh compile.sh; mv ./classes/* ${TARGET})
 
 # jasmin needs java_cup, add it in class path
-export CLASSPATH=${TARGET}:${CLASSPATH}
+export CLASSPATH
+CLASSPATH=${TARGET}:${CLASSPATH}
 
 # Compile jasmin package
 (cd src; sh compile.sh; mv ./classes/* ${TARGET})

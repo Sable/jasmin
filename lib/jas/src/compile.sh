@@ -36,7 +36,8 @@ echo "done"
 
 # Compile and run the autogenerator
 
-export CLASSPATH=${TARGET}:${CLASSPATH}
+export CLASSPATH
+CLASSPATH=${TARGET}:${CLASSPATH}
 
 echo "Compiling autogenerator..."
 (cd scm/autogen; ${JAVAC} -d . autogen.java; cp autogen.class ..)
