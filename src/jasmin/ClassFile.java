@@ -68,8 +68,6 @@ public class ClassFile {
     int low_value;
     int high_value;
 
-
-
     int lastInstSize;
     Method currentMethod;
     Var currentField;
@@ -81,11 +79,6 @@ public class ClassFile {
 	code.addSootCodeAttr(name, value);
     }
     
-
-
-
-
-
     public void addGenericAttrToMethod(String name, byte[] value)
     {
 	if(currentMethod == null) 
@@ -110,8 +103,6 @@ public class ClassFile {
     {
 	class_env.addGenericAttr(g);
     }
-
-
 
     static final String BGN_METHOD = "bgnmethod:";
     static final String END_METHOD = "endmethod:";
@@ -151,7 +142,6 @@ public class ClassFile {
         source_name = name;
     }
 
-
     //
     // called by the .class directive
     //
@@ -166,6 +156,13 @@ public class ClassFile {
     //
     void setSuperClass(String name) {
         class_env.setSuperClass(new ClassCP(name));
+    }
+
+    //
+    // called by the .no_super directive 
+    // (for java.lang.Object only)
+    void setNoSuperClass() {
+        class_env.setNoSuperClass();
     }
 
     //

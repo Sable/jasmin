@@ -1,5 +1,8 @@
 Jasmin Revision History                                 Sable Research Group
 
+May 28, 2004                [Chris Pickett]
+    added .no_super directive (for compiling java.lang.Object)
+
 Sept 5, 2003                [Feng Qian]
     fixed various compile shell scripts for SunOS
 

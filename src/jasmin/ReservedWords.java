@@ -44,13 +44,14 @@ abstract class ReservedWords {
         reserved_words.put(".set", new Symbol(sym.DSET));
         reserved_words.put(".source", new Symbol(sym.DSOURCE));
         reserved_words.put(".super", new Symbol(sym.DSUPER));
+        reserved_words.put(".no_super", new Symbol(sym.DNOSUPER));
         reserved_words.put(".throws", new Symbol(sym.DTHROWS));
         reserved_words.put(".var", new Symbol(sym.DVAR));
 
 	reserved_words.put(".class_attribute", new Symbol(sym.DCLASS_ATTR));	
-reserved_words.put(".field_attribute", new Symbol(sym.DFIELD_ATTR));
-       reserved_words.put(".method_attribute", new Symbol(sym.DMETHOD_ATTR));
-       reserved_words.put(".code_attribute", new Symbol(sym.DCODE_ATTR));
+        reserved_words.put(".field_attribute", new Symbol(sym.DFIELD_ATTR));
+        reserved_words.put(".method_attribute", new Symbol(sym.DMETHOD_ATTR));
+        reserved_words.put(".code_attribute", new Symbol(sym.DCODE_ATTR));
 	
         // reserved_words used in Jasmin directives
         reserved_words.put("from", new Symbol(sym.FROM));

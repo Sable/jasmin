@@ -6,14 +6,12 @@ import java.util.Hashtable;
 import java.util.Enumeration;
 import java.util.Vector;
 
-
-
 /**
  * This is the place where all information about the class to
  * be created resides.
  *
- * @author $Author: fqian $
- * @version $Revision: 1.1 $
+ * @author $Author: plam $
+ * @version $Revision: 1.2 $
  */
 
 public class ClassEnv implements RuntimeConstants
@@ -28,6 +26,7 @@ public class ClassEnv implements RuntimeConstants
   Vector methods;
   SourceAttr source;
   Vector generic;
+  boolean hasSuperClass;
 
   public ClassEnv()
   {
@@ -50,7 +49,21 @@ public class ClassEnv implements RuntimeConstants
    * a ClassCP)
    */
   public void setClass(CP name)
-  {  this_class = name; addCPItem(name); }
+  { 
+    hasSuperClass = true;   
+    super_class = name; 
+    addCPItem(name);
+  }
+
+  /**
+   * Define this class to have no superclass.  Should only ever
+   * be used for java.lang.Object
+   */
+  public void setNoSuperClass()
+  {  
+    hasSuperClass = false;
+  }
+
   /**
    * Define this class to have this superclass
    * @param name CPE representing name for class. (This is usually
@@ -139,7 +152,10 @@ public class ClassEnv implements RuntimeConstants
 				// Class hierarchy/access
     out.writeShort(class_access);
     out.writeShort(getCPIndex(this_class));
-    out.writeShort(getCPIndex(super_class));
+    if (hasSuperClass)
+      { out.writeShort(getCPIndex(super_class)); }
+    else
+      { out.writeShort(0); }
                                 // interfaces
     out.writeShort(interfaces.size());
     for (Enumeration e = interfaces.elements(); e.hasMoreElements();)

@@ -78,7 +78,7 @@ scan with {:
 terminal token
     // Directives (words beginning with a '.')
     DCATCH, DCLASS, DEND, DFIELD, DLIMIT, DLINE, DMETHOD, DSET, DSUPER,
-    DSOURCE, DTHROWS, DVAR, DIMPLEMENTS, DINTERFACE,
+    DNOSUPER, DSOURCE, DTHROWS, DVAR, DIMPLEMENTS, DINTERFACE,
 
    // Attributes
 	DCODE_ATTR, DCLASS_ATTR, DFIELD_ATTR, DMETHOD_ATTR,
@@ -208,6 +208,11 @@ super_spec ::=
     DSUPER classname:name SEP
         {:
             classFile.setSuperClass(name);
+        :}
+    |
+    DNOSUPER SEP
+        {:
+            classFile.setNoSuperClass();
         :}
   ;
 
