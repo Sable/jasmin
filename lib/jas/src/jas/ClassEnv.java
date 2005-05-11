@@ -30,6 +30,11 @@ public class ClassEnv implements RuntimeConstants
   InnerClassAttr inner_class_attr;
   boolean classSynth;
   SyntheticAttr synthAttr;
+  DeprecatedAttr deprAttr = null;
+  SignatureAttr sigAttr = null;
+  VisibilityAnnotationAttr visAnnotAttr = null;
+  EnclMethAttr encl_meth_attr;
+  boolean highVersion = false;   
   
   public ClassEnv()
   {
@@ -46,6 +51,13 @@ public class ClassEnv implements RuntimeConstants
     generic = new Vector();
   }
 
+  public void setHighVersion(boolean b){
+    highVersion = b;
+    //System.out.println("setting high version number");
+    version_lo = (short) JAVA_MINOR_HIGH_VERSION;
+    version_hi = (short) JAVA_HIGH_VERSION;
+  }
+  
   /**
    * Define this class to have this name.
    * @param name CPE representing name for class. (This is usually
@@ -192,6 +204,18 @@ public class ClassEnv implements RuntimeConstants
     if (isClassSynth()){
         numExtra++;
     }
+    if (deprAttr != null){
+        numExtra++;
+    }
+    if (sigAttr != null){
+        numExtra++;
+    }
+    if (visAnnotAttr != null){
+        numExtra++;
+    }
+    if (encl_meth_attr != null){
+        numExtra++;
+    }
     
     out.writeShort(numExtra);
     if (source != null)
@@ -208,6 +232,22 @@ public class ClassEnv implements RuntimeConstants
         //SyntheticAttr sa = new SyntheticAttr();
         //sa.resolve(this);
         synthAttr.write(this, out);
+    }
+    // deprecated attr
+    if (deprAttr != null){
+        deprAttr.write(this, out);
+    }
+    // signature attr
+    if (sigAttr != null){
+        sigAttr.write(this, out);
+    }
+    // encl meth attr
+    if (encl_meth_attr != null){
+        encl_meth_attr.write(this, out);
+    }
+    // visibility annotation attr
+    if (visAnnotAttr != null){
+        visAnnotAttr.write(this, out);
     }
     // inner class attr
     if (inner_class_attr != null){
@@ -272,10 +312,30 @@ public class ClassEnv implements RuntimeConstants
   public boolean isClassSynth(){
     return classSynth;
   }
+
+  public void setClassDepr(DeprecatedAttr d){
+    deprAttr = d;
+    deprAttr.resolve(this);
+  }
+  
+  public void setClassSigAttr(SignatureAttr s){
+    sigAttr = s;
+    sigAttr.resolve(this);
+  }
+  
+  public void setClassAnnotAttr(VisibilityAnnotationAttr s){
+    visAnnotAttr = s;
+    visAnnotAttr.resolve(this);
+  }
   
   public void finishInnerClassAttr(InnerClassAttr attr){
       inner_class_attr = attr;  
       inner_class_attr.resolve(this);
+  }
+
+  public void addEnclMethAttr(EnclMethAttr attr){
+      encl_meth_attr = attr;
+      encl_meth_attr.resolve(this);
   }
   
   /**

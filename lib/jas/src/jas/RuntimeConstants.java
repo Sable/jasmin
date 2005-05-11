@@ -7,8 +7,10 @@ public interface RuntimeConstants {
 
     // top-level constants
     public static final int JAVA_MAGIC = -889275714;
-    public static final int JAVA_VERSION = 45;
-    public static final int JAVA_MINOR_VERSION = 3;
+    public static final int JAVA_VERSION = 46;
+    public static final int JAVA_MINOR_VERSION = 0;
+    public static final int JAVA_HIGH_VERSION = 49;
+    public static final int JAVA_MINOR_HIGH_VERSION = 0;
 
     // constant pool entry types
     public static final int CONSTANT_UTF8 = 1;
@@ -37,6 +39,8 @@ public interface RuntimeConstants {
     public static final int ACC_INTERFACE = 512;
     public static final int ACC_ABSTRACT = 1024;
     public static final int ACC_STRICTFP = 2048;
+    public static final int ACC_ANNOTATION = 8192;
+    public static final int ACC_ENUM = 16384;
     public static final int ACC_SUPER = 32;
 
     // types for newarray

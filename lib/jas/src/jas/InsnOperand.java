@@ -178,7 +178,11 @@ class LdcOperand extends InsnOperand implements RuntimeConstants
   { source = s; this.cpe = cpe; this.wide = wide; }
 
   void resolve(ClassEnv e)
-  { e.addCPItem(cpe); }
+  { e.addCPItem(cpe);
+      if (cpe instanceof ClassCP){
+        e.setHighVersion(true);
+      }
+  }
 
   void write(ClassEnv e, CodeAttr ce, DataOutputStream out)
     throws IOException, jasError

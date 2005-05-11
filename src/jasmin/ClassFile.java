@@ -61,6 +61,11 @@ public class ClassFile {
     InnerClassAttr inner_class_attr;
     Hashtable labels;
     boolean methSynth;
+    boolean methDepr;
+    String methSigAttr;
+    VisibilityAnnotationAttr methAnnotAttr;
+    ParameterVisibilityAnnotationAttr methParamAnnotAttr;
+    ElemValPair methAnnotDef;
     
     int line_label_count, line_num;
     boolean auto_number;
@@ -74,6 +79,7 @@ public class ClassFile {
     Method currentMethod;
     Var currentField;
 
+    VisibilityAnnotationAttr vis_annot_attr;
     
     public void addSootCodeAttr(String name, String value)
     {
@@ -99,6 +105,16 @@ public class ClassFile {
 	    class_env.addCPItem(new AsciiCP(name));
 	    currentField.addGenericAttr(new GenericAttr(name, value));
 	}
+    }
+
+    public void addDeprecatedToField(){
+        if (currentField == null){
+            System.err.println("Error: no field in scope to add deprecated attribute onto");
+        }
+        else {
+            //System.out.println("adding deprec to field" );
+            currentField.addDeprecatedAttr(new DeprecatedAttr());
+        }
     }
 
     public void addGenericAttrToClass(GenericAttr g)
@@ -174,15 +190,33 @@ public class ClassFile {
         class_env.addInterface(new ClassCP(name));
     }
 
-    void addField(short access, String name, String sig, Object value){
-        addField(access, name, sig, value, null);
+    void addClassDeprAttr(Object res){
+        if (res != null){
+            class_env.setClassDepr(new DeprecatedAttr());
+        }
+    }
+    
+    void addClassSigAttr(Object res){
+        if (res != null){
+            class_env.setClassSigAttr(new SignatureAttr((String)res));
+        }
+    }
+    
+    void addClassAnnotAttr(Object res){
+        if (res != null){
+            class_env.setClassAnnotAttr((VisibilityAnnotationAttr)res);
+        }
+    }
+    
+    void addField(short access, String name, String sig, Object value, Object dep_attr, Object sig_attr, Object vis_annot_attr){
+        addField(access, name, sig, value, null, dep_attr, sig_attr, vis_annot_attr);
     }
 
     //
     // called by the .field directive
     //
     void addField(short access, String name,
-                                String sig, Object value, String synth) {
+                                String sig, Object value, String synth, Object dep_attr, Object sig_attr, Object vis_annot_attr) {
 
 
         if (value == null) {
@@ -193,7 +227,16 @@ public class ClassFile {
             else {
                 currentField = new Var(access, new AsciiCP(name), new AsciiCP(sig), null, new SyntheticAttr());
             }
-        
+        if(dep_attr != null){
+            currentField.addDeprecatedAttr(new DeprecatedAttr());
+        }
+        if(sig_attr != null){
+            currentField.addSignatureAttr(new SignatureAttr((String)sig_attr));
+        }
+        if (vis_annot_attr != null){
+            currentField.addVisibilityAnnotationAttr((VisibilityAnnotationAttr)vis_annot_attr);
+        }
+            
 	    /*currentField =
 		new Var(access, new AsciiCP(name),
 			new AsciiCP(sig), null);*/
@@ -230,6 +273,12 @@ public class ClassFile {
             new Var(access, new AsciiCP(name),
                                new AsciiCP(sig), new ConstAttr(cp), new SyntheticAttr());
             }
+        if(dep_attr != null){
+            currentField.addDeprecatedAttr(new DeprecatedAttr());
+        }
+        if(sig_attr != null){
+            currentField.addSignatureAttr(new SignatureAttr((String)sig_attr));
+        }
 	    class_env.addField(currentField);
         }
     }
@@ -251,6 +300,11 @@ public class ClassFile {
         method_signature = signature;
         method_access    = (short)access;
         methSynth = false;
+        methDepr = false;
+        methSigAttr = null;
+        methAnnotAttr = null;
+        methParamAnnotAttr = null;
+        methAnnotDef = null;
     }
 
     //
@@ -284,6 +338,22 @@ public class ClassFile {
 					    new AsciiCP(method_signature), code, except_attr, new SyntheticAttr());
         }
 
+        if (methDepr){
+            currentMethod.addDeprecatedAttr(new DeprecatedAttr());
+        }
+        if (methSigAttr != null){ 
+            currentMethod.addSignatureAttr(new SignatureAttr(methSigAttr));
+        }
+        if (methAnnotAttr != null){ 
+            currentMethod.addAnnotationAttr(methAnnotAttr);
+        }
+        if (methParamAnnotAttr != null){ 
+            currentMethod.addParamAnnotationAttr(methParamAnnotAttr);
+        }
+        if (methAnnotDef != null){ 
+            methAnnotDef.setNoName();
+            currentMethod.addAnnotationDef(new AnnotationDefaultAttr(methAnnotDef));
+        }
 	class_env.addMethod( currentMethod);
 	
 	
@@ -298,10 +368,16 @@ public class ClassFile {
         line_table  = null;
         var_table   = null;
 	    methSynth   = false;
-
+        methDepr    = false;
+        methSigAttr = null;
+        methAnnotAttr = null;
+        methParamAnnotAttr = null;
+        methAnnotDef = null;
 
 
     }
+
+    
 
     //
     // plant routines - these use addInsn to add instructions to the
@@ -401,6 +477,7 @@ public class ClassFile {
     // used for ldc <quoted-string>
     //
     void plantString(String name, String val) throws jasError {
+        //System.out.println("plant string");
         InsnInfo insn = InsnInfo.get(name);
         autoNumber();
 	Insn inst = null;
@@ -445,6 +522,7 @@ public class ClassFile {
     // (e.g. branches, newarray, invokemethod)
     //
     void plant(String name, String val) throws jasError {
+        //System.out.println("plant name, val: "+val);
         InsnInfo insn = InsnInfo.get(name);
         CodeAttr code = _getCode();
         autoNumber();
@@ -454,6 +532,7 @@ public class ClassFile {
             inst = new Insn(insn.opcode,
                          new MethodCP(split[0], split[1], split[2]));
         } else if (insn.args.equals("constant")) {
+            //System.out.println("constant");
             inst = new Insn(insn.opcode, new ClassCP(val));
         } else if (insn.args.equals("atype")) {
             int atype = 0;
@@ -768,7 +847,159 @@ public class ClassFile {
     void addMethSynthAttr(){
         methSynth = true;
     }
+   
+    void addMethDeprAttr(){
+         methDepr = true;
+    }
+   
+    void addMethSigAttr(String s){
+        methSigAttr = s;
+    }
+   
+    void addEnclMethAttr(String cls, String meth, String sig){
+        class_env.addEnclMethAttr(new EnclMethAttr(cls, meth, sig));
+    }
+   
+    void addMethAnnotAttr(Object attr){
+        methAnnotAttr = (VisibilityAnnotationAttr)attr;
+    }
+   
+    void addMethParamAnnotAttr(Object attr){
+        methParamAnnotAttr = (ParameterVisibilityAnnotationAttr)attr;
+    }
+   
+    void addMethAnnotDefault(Object attr){
+        methAnnotDef = (ElemValPair)attr;
+    }
+   
     
+    VisibilityAnnotationAttr makeVisibilityAnnotation(Object tval, Object list){
+        return new VisibilityAnnotationAttr((String)tval, (ArrayList)list);
+    }
+    
+    ParameterVisibilityAnnotationAttr makeParameterVisibilityAnnotation(Object kind, Object list){
+        return new ParameterVisibilityAnnotationAttr((String)kind+"Parameter", (ArrayList)list);
+    }
+    
+
+    void endVisibilityAnnotation(){
+    }
+
+    /*void addAnnotAttrToField(){
+        System.out.println("curr Field: "+currentField);
+        if (currentField != null){
+            currentField.addVisibilityAnnotationAttr(vis_annot_attr, class_env);
+        }
+    }*/
+   
+    AnnotationAttr currAnn = null;
+  
+    ArrayList makeNewAnnotAttrList(Object annot){
+        ArrayList list = new ArrayList();
+        list.add(annot);
+        return (ArrayList)list;
+    }
+
+    ArrayList mergeNewAnnotAttr(Object list, Object elem){
+        ((ArrayList)list).add(elem);
+        return (ArrayList)list;
+    }
+    
+    ArrayList makeNewAnnotationList(Object elem){
+        ArrayList list = new ArrayList();
+        list.add(elem);
+        return (ArrayList)list;
+    }
+
+    ArrayList mergeNewAnnotation(Object list, Object elem){
+        ((ArrayList)list).add(elem);
+        return (ArrayList)list;
+    }
+    
+    AnnotationAttr makeAnnotation(String type, Object elems){
+        return new AnnotationAttr(type, (ArrayList)elems);
+    }
+
+    void endAnnotation(){
+        if (vis_annot_attr == null){
+            vis_annot_attr = new VisibilityAnnotationAttr();
+        }
+        vis_annot_attr.addAnnotation(currAnn);
+    }
+
+    ArrayList makeNewElemValPairList(Object elem){
+        ArrayList list = new ArrayList();
+        list.add(elem);
+        return list;
+    }
+
+    ArrayList mergeNewElemValPair(Object list, Object elem){
+        ((ArrayList)list).add(elem);
+        return (ArrayList)list;
+    }
+    
+    ElemValPair makeConstantElem(String name, char kind, Object val){
+        //System.out.println("making constant elem val pair: "+val);
+        ElemValPair result = null;
+        //System.out.println("val: "+val);
+        switch(kind){
+            case 'S' : {
+                       }
+            case 'B' : {
+                       }
+            case 'Z' : {
+                       }
+            case 'C' : {
+                       }
+            case 'I' : {
+                           result = new IntElemValPair(name, kind, ((Integer)val).intValue());
+                           break;
+                       }
+            case 'J' : {
+                           result = new LongElemValPair(name, kind, ((Number)val).longValue());
+                           break;
+                       }
+            case 'F' : {
+                           result = new FloatElemValPair(name, kind, ((Number)val).floatValue());
+                           break;
+                       }
+            case 'D' : {
+                           result = new DoubleElemValPair(name, kind, ((Number)val).doubleValue());
+                           break;
+                       }
+            case 's' : {
+                           result = new StringElemValPair(name, kind, (String)val);
+                           break;
+                       }
+                
+        }
+        return result;
+    }
+   
+    ElemValPair makeEnumElem(String name, char kind, String tval, String cval){
+        return new EnumElemValPair(name, kind, tval, cval);
+    }
+
+    ElemValPair makeClassElem(String name, char kind, String cval){
+        return new ClassElemValPair(name, kind, cval);
+    }
+
+    ElemValPair makeAnnotElem(String name, char kind, Object attr){
+        return new AnnotElemValPair(name, kind, (AnnotationAttr)attr);
+    }
+    
+    ElemValPair makeArrayElem(String name, char kind, Object list){
+        ArrayElemValPair elem = new ArrayElemValPair(name, kind, (ArrayList)list);
+        elem.setNoName();
+        return elem;
+    }
+    
+    void endAnnotElem(){
+    }
+
+    void endArrayElem(){
+        
+    }
     // PUBLIC API TO JASMIN:
 	
     /** Makes a new ClassFile object, used to represent a Java class file.

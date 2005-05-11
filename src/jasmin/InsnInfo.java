@@ -217,7 +217,7 @@ class InsnInfo {
         addInfo("lconst_0", RuntimeConstants.opc_lconst_0, "");
         addInfo("lconst_1", RuntimeConstants.opc_lconst_1, "");
         addInfo("ldc", RuntimeConstants.opc_ldc, "constant");
-        addInfo("ldc_w", RuntimeConstants.opc_ldc, "constant");
+        addInfo("ldc_w", RuntimeConstants.opc_ldc_w, "constant");
         addInfo("ldc2_w", RuntimeConstants.opc_ldc2_w, "bigconstant");
         addInfo("ldiv", RuntimeConstants.opc_ldiv, "");
         addInfo("lload", RuntimeConstants.opc_lload, "i");

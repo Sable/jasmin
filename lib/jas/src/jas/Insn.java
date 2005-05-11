@@ -198,6 +198,7 @@ public class Insn implements RuntimeConstants
         break;
       case opc_ldc2_w:
       case opc_ldc_w:
+        //System.out.println("ldc_w: arg: "+arg);
         operand = new LdcOperand(this, arg);
         break;
       case opc_ldc:

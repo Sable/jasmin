@@ -27,6 +27,7 @@
 package jasmin;
 
 import java_cup.runtime.*;
+import java_cup.*;
 import jas.*;
 import java.io.*;
 import java.util.Hashtable;
@@ -81,7 +82,7 @@ terminal token
     DNOSUPER, DSOURCE, DTHROWS, DVAR, DIMPLEMENTS, DINTERFACE,
 
     // Attributes
-	DCODE_ATTR, DCLASS_ATTR, DFIELD_ATTR, DMETHOD_ATTR, DINNER_CLASS_ATTR, DINNER_CLASS_SPEC_ATTR, DSYNTHETIC,
+	DCODE_ATTR, DCLASS_ATTR, DFIELD_ATTR, DMETHOD_ATTR, DINNER_CLASS_ATTR, DINNER_CLASS_SPEC_ATTR, DSYNTHETIC, DENCLOSING_METH, DDEPRECATED, DSIG_ATTR, DRUNTIME_VISIBLE, DRUNTIME_INVISIBLE, DRUNTIME_PARAM_VISIBLE, DRUNTIME_PARAM_INVISIBLE, DANNOTATION_ATTR, DANNOTATION, INT_KIND, BYTE_KIND, CHAR_KIND, SHORT_KIND, BOOL_KIND, LONG_KIND, DOUB_KIND, FLOAT_KIND, ARR_KIND, ANN_KIND, ENUM_KIND, CLS_KIND, STR_KIND, DARR_ELEM, DANNOT_ELEM, DELEM, DANNOT_DEFAULT, DPARAM_ANNOT_ATTR, 
 
 
     // keywords for directives
@@ -89,13 +90,14 @@ terminal token
 
     // access types
     ABSTRACT, FINAL, INTERFACE, NATIVE, PRIVATE, PROTECTED, PUBLIC, STATIC,
-    SYNCHRONIZED, TRANSIENT, VOLATILE, STRICTFP,
+    SYNCHRONIZED, TRANSIENT, VOLATILE, STRICTFP, ANNOTATION, ENUM, 
 
     // complex instructions
     LOOKUPSWITCH, TABLESWITCH, DEFAULT,
 
     // special symbols
     EQ, SEP, COLON
+    
  ;
 
 terminal String Str, Word, Insn;
@@ -104,24 +106,34 @@ terminal Number Num;
 
 nonterminal String classname;
 nonterminal Object optional_default, item;
+nonterminal Object deprecated_attr, signature_attr;
 
 /* Non terminals */
 nonterminal 
        access_item, access_items, access_list, catch_expr, class_spec,
        complex_instruction, defmethod, directive, endmethod, field_list,
-       field_spec, fields, instruction, implements, implements_list, implements_spec,
+       field_spec, fields, instruction, impls, implements_list, 
+       implements_spec,
        jas_file, label, limit_expr, lookup,
-       lookup_args, lookup_default, lookup_entry, lookup_list_t, lookup_list, method_list,
+       lookup_args, lookup_default, lookup_entry, lookup_list_t, lookup_list, 
+       method_list,
        method_spec, methods, set_expr, simple_instruction, source_spec,
        statement, statements, stmnt, super_spec, table, table_args, line_expr,
-       table_default, table_entry, table_list_t, table_list, throws_expr, var_expr, 
+       table_default, table_entry, table_list_t, table_list, throws_expr, 
+       var_expr, 
 	   code_attr_expr, 
 	   class_attrs, class_attr_list,  class_attr_spec,
 	   method_item, method_attrs, method_attr_list,  method_attr_spec,
 	   field_item, field_attrs, field_attr_list,  field_attr_spec,
        inner_class_attr, inner_class_attr_list, inner_class_attr_spec,
-       end_inner_class_attr, synth_attr, meth_synth_attr
-
+       end_inner_class_attr, synth_attr, encl_meth_attr,
+       meth_synth_attr, meth_depr_attr, meth_sig_attr, class_depr_attr,
+       class_sig_attr, visibility_type, annotation_attr, annotation_list,
+       annotation, elem_val_pair_list, meth_annotation_attr, 
+       class_annotation_attr, elem_val_pair, meth_annotation_default_attr,
+       meth_param_annotation_attr, annotation_attr_list,
+       param_visibility_type, annotation_attr_opt, annotation_list_opt,
+       elem_val_pair_list_opt
     ;
 
 nonterminal Short access;
@@ -132,10 +144,14 @@ jas_file ::=
         source_spec        
         class_spec
         super_spec
-	implements
-	class_attrs
-    synth_attr
-    inner_class_attr
+	    impls
+	    class_attrs
+        synth_attr
+        inner_class_attr
+        encl_meth_attr
+        class_depr_attr
+        class_sig_attr
+        class_annotation_attr
         fields
         methods
     ;
@@ -207,6 +223,10 @@ access_item ::=
     ABSTRACT     {: access_val |= RuntimeConstants.ACC_ABSTRACT; :}
     |
     STRICTFP     {: access_val |= RuntimeConstants.ACC_STRICTFP; :}
+    |
+    ANNOTATION     {: access_val |= RuntimeConstants.ACC_ANNOTATION; :}
+    |
+    ENUM     {: access_val |= RuntimeConstants.ACC_ENUM; :}
   ;
 
 // ---- Superclass specification
@@ -225,7 +245,7 @@ super_spec ::=
 
 // ---- Implements specification
 
-implements ::= implements_list | /* empty */ ;
+impls ::= implements_list | /* empty */ ;
 
 implements_list ::= implements_list implements_spec | implements_spec ;
 
@@ -233,8 +253,24 @@ implements_spec ::= DIMPLEMENTS classname:name SEP
 	{: classFile.addInterface(name); :}
     ;
 
+class_depr_attr ::= deprecated_attr:dep_attr
+    {:
+        classFile.addClassDeprAttr(dep_attr);
+    :}
+;    
 
+class_sig_attr ::= signature_attr:sig_attr
+    {:
+        classFile.addClassSigAttr(sig_attr);
+    :}
+;    
 
+class_annotation_attr ::= annotation_attr_opt:annot_attr
+    {:
+        classFile.addClassAnnotAttr(annot_attr);
+    :}
+;    
+    
 // ---- Fields
 
 fields ::= field_list | /* empty */ ;
@@ -244,15 +280,15 @@ field_list ::= field_list field_item | field_item;
 field_item ::= field_spec field_attrs | field_spec;
 
 field_spec ::=
-    DFIELD access:a Str:name Word:sig optional_default:v SEP
+    DFIELD access:a Str:name Word:sig optional_default:v SEP deprecated_attr:dep_attr signature_attr:sig_attr annotation_attr_opt:vis_annot_attr
         {:
             classFile.addField((short)a.intValue(), name, sig,
-                            v);
+                            v, dep_attr, sig_attr, vis_annot_attr);
         :}
    |
-   DFIELD access:a Str:name Word:sig optional_default:v DSYNTHETIC SEP 
+   DFIELD access:a Str:name Word:sig optional_default:v DSYNTHETIC SEP deprecated_attr:dep_attr signature_attr:sig_attr annotation_attr_opt:vis_annot_attr
         {:
-            classFile.addField((short)a.intValue(), name, sig, v, "synth");
+            classFile.addField((short)a.intValue(), name, sig, v, "synth", dep_attr, sig_attr, vis_annot_attr);
         :}
    ;
 
@@ -351,6 +387,16 @@ directive ::=
     DCODE_ATTR code_attr_expr   
     |
     meth_synth_attr
+    | 
+    meth_depr_attr
+    |
+    meth_sig_attr
+    |
+    meth_annotation_attr
+    |
+    meth_annotation_default_attr
+    |
+    meth_param_annotation_attr
   ;
 
 meth_synth_attr ::= DSYNTHETIC
@@ -359,17 +405,56 @@ meth_synth_attr ::= DSYNTHETIC
     :}
 ;
 
+meth_depr_attr ::= DDEPRECATED
+    {:
+        classFile.addMethDeprAttr();
+    :}
+;    
+
+meth_sig_attr ::= DSIG_ATTR Str:s
+    {:
+        classFile.addMethSigAttr(s);
+    :}
+;    
+
+meth_annotation_attr ::= visibility_type:tval SEP annotation_list:list DEND DANNOTATION_ATTR 
+    {:
+        RESULT = classFile.makeVisibilityAnnotation(tval, list);
+        classFile.addMethAnnotAttr(RESULT);
+    :}
+;
+
+meth_param_annotation_attr ::= DPARAM_ANNOT_ATTR visibility_type:kind SEP annotation_attr_list:list DEND DPARAM_ANNOT_ATTR
+    {:
+        RESULT = classFile.makeParameterVisibilityAnnotation(kind, list);
+        classFile.addMethParamAnnotAttr(RESULT);
+    :}
+;
+
+annotation_attr_list ::= 
+    annotation_attr_list:list annotation_attr:elem 
+    {:
+        RESULT = classFile.mergeNewAnnotAttr(list, elem);
+    :}
+    |
+    annotation_attr:elem
+    {:
+        RESULT = classFile.makeNewAnnotAttrList(elem);
+    :}
+;    
+
+meth_annotation_default_attr ::= DANNOT_DEFAULT elem_val_pair:def DEND DANNOT_DEFAULT 
+    {:
+        classFile.addMethAnnotDefault(def);
+    :}
+;    
+
 code_attr_expr ::=
  Word:w Str:v
           {:
                classFile.addSootCodeAttr(w, v);    
           :}
 ;
-
-
-
-
-
 
 //
 // .var <num> is <name> <sig> from StartLab to EndLab
@@ -643,6 +728,167 @@ synth_attr ::= DSYNTHETIC SEP
     |
     /* empty */
 ;
+
+encl_meth_attr ::= DENCLOSING_METH Str:c Str:m Str:s SEP
+    {:
+        classFile.addEnclMethAttr(c, m, s);
+    :}
+    |
+    /* empty */
+;
+
+deprecated_attr ::= DDEPRECATED SEP
+    {:
+        RESULT = "deprecated";
+    :}
+    |
+    {:
+        /* empty */ RESULT = null;
+    :}    
+;
+
+signature_attr ::= DSIG_ATTR Str:sig SEP 
+    {:
+        RESULT = sig;
+    :}
+    | 
+    {:
+        /* empty */ RESULT = null;
+    :}    
+;
+
+visibility_type ::= 
+    DRUNTIME_VISIBLE 
+    {: RESULT = "RuntimeVisible"; :}
+    | 
+    DRUNTIME_INVISIBLE 
+    {: RESULT = "RuntimeInvisible"; :}
+;
+
+param_visibility_type ::=
+    DRUNTIME_PARAM_VISIBLE 
+    {: RESULT = "RuntimeVisibleParameter"; :}
+    | 
+    DRUNTIME_PARAM_INVISIBLE
+    {: RESULT = "RuntimeInvisibleParameter"; :}
+;    
+
+annotation_attr_opt ::= annotation_attr:attr
+    {:  
+        RESULT = attr;
+    :}
+    |
+    {:
+        RESULT = null; /* empty */
+    :}
+;
+
+annotation_attr ::= visibility_type:tval SEP annotation_list_opt:list DEND DANNOTATION_ATTR SEP 
+    {:
+        RESULT = classFile.makeVisibilityAnnotation(tval, list);
+    :}
+;    
+
+annotation_list_opt ::= annotation_list:list
+    {:
+        RESULT = list;
+    :}
+    |
+    /* empty */
+    {:
+        RESULT = null;
+    :}
+;    
+
+annotation_list ::= annotation_list:list annotation:elem {:
+        RESULT = classFile.mergeNewAnnotation(list, elem);
+    :}
+    | 
+    annotation:elem{:
+        RESULT = classFile.makeNewAnnotationList(elem);
+    :}
+;
+
+annotation ::= DANNOTATION Str:annotation_type SEP elem_val_pair_list_opt:elems DEND DANNOTATION SEP
+    {:
+        RESULT = classFile.makeAnnotation(annotation_type, elems);
+    :}
+;
+
+elem_val_pair_list_opt ::=
+    elem_val_pair_list:list
+    {:
+        RESULT = list;
+    :}
+    |
+    /* empty */
+    {:
+        RESULT = null;
+    :}
+;    
+    
+elem_val_pair_list ::= elem_val_pair_list:list elem_val_pair:elem {:
+        RESULT = classFile.mergeNewElemValPair(list, elem);
+    :}
+    | elem_val_pair:elem {:
+        RESULT = classFile.makeNewElemValPairList(elem);
+    :}
+;
+
+elem_val_pair ::= 
+    DELEM INT_KIND Str:name Int:val SEP{:
+        RESULT = classFile.makeConstantElem(name, 'I', val);
+    :}
+    |
+    DELEM SHORT_KIND Str:name Int:val SEP{:
+        RESULT = classFile.makeConstantElem(name, 'S', val);
+    :}
+    |
+    DELEM BYTE_KIND Str:name Int:val SEP{:
+        RESULT = classFile.makeConstantElem(name, 'B', val);
+    :}
+    |
+    DELEM CHAR_KIND Str:name Int:val SEP{:
+        RESULT = classFile.makeConstantElem(name, 'C', val);
+    :}
+    |
+    DELEM BOOL_KIND Str:name Int:val SEP{:
+        RESULT = classFile.makeConstantElem(name, 'Z', val);
+    :}
+    |
+    DELEM LONG_KIND Str:name item:val SEP{:
+        RESULT = classFile.makeConstantElem(name, 'J', val);
+    :}
+    |
+    DELEM FLOAT_KIND Str:name item:val SEP{:
+        RESULT = classFile.makeConstantElem(name, 'F', val);
+    :}
+    |
+    DELEM DOUB_KIND Str:name item:val SEP{:
+        RESULT = classFile.makeConstantElem(name, 'D', val);
+    :}
+    |
+    DELEM STR_KIND Str:name Str:val SEP{:
+        RESULT = classFile.makeConstantElem(name, 's', val);
+    :}
+    |
+    DELEM ENUM_KIND Str:name Str:tname Str:cname SEP{:
+        RESULT = classFile.makeEnumElem(name, 'e', tname, cname);
+    :}
+    |
+    DELEM CLS_KIND Str:name Str:desc SEP{:
+        RESULT = classFile.makeClassElem(name, 'c', desc);
+    :}
+    |
+    DELEM ARR_KIND Str:name SEP elem_val_pair_list_opt:list DEND DARR_ELEM SEP{:
+        RESULT = classFile.makeArrayElem(name, '[', list);
+    :}
+    |
+    DELEM ANN_KIND Str:name SEP annotation:attr DEND DANNOT_ELEM SEP{:
+        RESULT = classFile.makeAnnotElem(name, '@', attr);
+    :}
+;        
+        
 
 /* --- Revision History ---------------------------------------------------
 --- Jonathan Meyer, Mar 1 1997

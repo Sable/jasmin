@@ -17,7 +17,12 @@ public class Method
   CodeAttr code;
   ExceptAttr excepts;
   SyntheticAttr synthAttr = null;    
-    Vector genericAttrs = new Vector();
+  DeprecatedAttr deprAttr = null;    
+  SignatureAttr sigAttr = null;    
+  VisibilityAnnotationAttr vis_annot_attr = null;    
+  ParameterVisibilityAnnotationAttr param_vis_annot_attr = null;    
+  AnnotationDefaultAttr annotDef = null;    
+  Vector genericAttrs = new Vector();
 
   /**
    * @param macc method access permissions. It is a combination
@@ -48,7 +53,30 @@ public class Method
 	genericAttrs.addElement(g);	
     }
 
+    public void addDeprecatedAttr(DeprecatedAttr d)
+    {
+	    deprAttr = d;	
+    }
 
+    public void addSignatureAttr(SignatureAttr s)
+    {
+	    sigAttr = s;	
+    }
+
+    public void addAnnotationAttr(VisibilityAnnotationAttr v)
+    {
+	    vis_annot_attr = v;
+    }
+
+    public void addParamAnnotationAttr(ParameterVisibilityAnnotationAttr v)
+    {
+	    param_vis_annot_attr = v;
+    }
+
+    public void addAnnotationDef(AnnotationDefaultAttr v)
+    {
+        annotDef = v;
+    }
 
   void resolve(ClassEnv e)
   {
@@ -57,6 +85,11 @@ public class Method
     if (code != null)  code.resolve(e);
     if (excepts != null)  excepts.resolve(e);
     if (synthAttr != null) synthAttr.resolve(e);
+    if (deprAttr != null) deprAttr.resolve(e);
+    if (sigAttr != null) sigAttr.resolve(e);
+    if (vis_annot_attr != null) vis_annot_attr.resolve(e);
+    if (param_vis_annot_attr != null) param_vis_annot_attr.resolve(e);
+    if (annotDef != null) annotDef.resolve(e);
   }
 
   void write(ClassEnv e, DataOutputStream out)
@@ -72,11 +105,31 @@ public class Method
     if (synthAttr != null){
         cnt++;
     }
+    if (deprAttr != null){
+        cnt++;
+    }
+    if (sigAttr != null){
+        cnt++;
+    }
+    if (vis_annot_attr != null){
+        cnt++;
+    }
+    if (param_vis_annot_attr != null){
+        cnt++;
+    }
+    if (annotDef != null){
+        cnt++;
+    }
     out.writeShort(cnt);
     if (code != null) code.write(e, out);
     if (excepts != null) excepts.write(e, out);
     if (synthAttr != null) synthAttr.write(e, out);
-
+    if (deprAttr != null) deprAttr.write(e, out);
+    if (sigAttr != null) sigAttr.write(e, out);
+    if (vis_annot_attr != null) vis_annot_attr.write(e, out);
+    if (param_vis_annot_attr != null) param_vis_annot_attr.write(e, out);
+    if (annotDef != null) annotDef.write(e, out);
+    
     for(Enumeration enu = genericAttrs.elements(); enu.hasMoreElements();) {
 	((GenericAttr)enu.nextElement()).write(e, out);
     }

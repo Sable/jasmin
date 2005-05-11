@@ -55,6 +55,36 @@ abstract class ReservedWords {
         reserved_words.put(".inner_class_attr", new Symbol(sym.DINNER_CLASS_ATTR));	
         reserved_words.put(".inner_class_spec_attr", new Symbol(sym.DINNER_CLASS_SPEC_ATTR));	
         reserved_words.put(".synthetic", new Symbol(sym.DSYNTHETIC));	
+        reserved_words.put(".enclosing_method_attr", new Symbol(sym.DENCLOSING_METH));	
+        reserved_words.put(".deprecated", new Symbol(sym.DDEPRECATED));	
+        reserved_words.put(".signature_attr", new Symbol(sym.DSIG_ATTR));	
+        
+        // annotation related directives
+        reserved_words.put(".runtime_visible_annotation", new Symbol(sym.DRUNTIME_VISIBLE));
+        reserved_words.put(".runtime_invisible_annotation", new Symbol(sym.DRUNTIME_INVISIBLE));
+        reserved_words.put(".runtime_param_visible_annotation", new Symbol(sym.DRUNTIME_PARAM_VISIBLE));
+        reserved_words.put(".runtime_param_invisible_annotation", new Symbol(sym.DRUNTIME_PARAM_INVISIBLE));
+        reserved_words.put(".annotation_attr", new Symbol(sym.DANNOTATION_ATTR));
+        reserved_words.put(".param", new Symbol(sym.DPARAM_ANNOT_ATTR));
+        reserved_words.put(".annotation", new Symbol(sym.DANNOTATION));
+        reserved_words.put(".int_kind", new Symbol(sym.INT_KIND));
+        reserved_words.put(".byte_kind", new Symbol(sym.BYTE_KIND));
+        reserved_words.put(".char_kind", new Symbol(sym.CHAR_KIND));
+        reserved_words.put(".short_kind", new Symbol(sym.SHORT_KIND));
+        reserved_words.put(".bool_kind", new Symbol(sym.BOOL_KIND));
+        reserved_words.put(".str_kind", new Symbol(sym.STR_KIND));
+        reserved_words.put(".long_kind", new Symbol(sym.LONG_KIND));
+        reserved_words.put(".doub_kind", new Symbol(sym.DOUB_KIND));
+        reserved_words.put(".float_kind", new Symbol(sym.FLOAT_KIND));
+        reserved_words.put(".enum_kind", new Symbol(sym.ENUM_KIND));
+        reserved_words.put(".ann_kind", new Symbol(sym.ANN_KIND));
+        reserved_words.put(".arr_kind", new Symbol(sym.ARR_KIND));
+        reserved_words.put(".cls_kind", new Symbol(sym.CLS_KIND));
+        reserved_words.put(".arr_elem", new Symbol(sym.DARR_ELEM));
+        reserved_words.put(".annot_elem", new Symbol(sym.DANNOT_ELEM));
+        reserved_words.put(".elem", new Symbol(sym.DELEM));
+        reserved_words.put(".annotation_default", new Symbol(sym.DANNOT_DEFAULT));
+        
         
         // reserved_words used in Jasmin directives
         reserved_words.put("from", new Symbol(sym.FROM));
@@ -81,5 +111,7 @@ abstract class ReservedWords {
         reserved_words.put("interface", new Symbol(sym.INTERFACE));
         reserved_words.put("abstract", new Symbol(sym.ABSTRACT));
         reserved_words.put("strictfp", new Symbol(sym.STRICTFP));
+        reserved_words.put("annotation", new Symbol(sym.ANNOTATION));
+        reserved_words.put("enum", new Symbol(sym.ENUM));
     }
 }

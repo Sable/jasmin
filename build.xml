@@ -20,6 +20,18 @@
         </javac>
     </target>
 
+    <target name="build_parser">
+        <java
+            classname="java_cup.Main"
+            dir="src/jasmin"
+            classpath="${java_cup.jar}"
+            >
+        <arg line="src/jasmin/parser.cup"/>
+        </java>
+        <move file="parser.java" tofile="src/jasmin/parser.java"/> 
+        <move file="sym.java" tofile="src/jasmin/sym.java"/> 
+    </target>
+
     <target name="scm" depends="autogen_run">
         <javac
             destdir="classes"

@@ -20,8 +20,11 @@ public class Var
   CP name, sig;
   ConstAttr const_attr;
   SyntheticAttr synth_attr = null;
+  DeprecatedAttr dep_attr = null;
+  SignatureAttr sig_attr = null;
+  VisibilityAnnotationAttr vis_annot_attr = null;
   
-    Vector genericAttrs = new Vector();
+  Vector genericAttrs = new Vector();
     
 
   /**
@@ -52,8 +55,18 @@ public class Var
         genericAttrs.addElement(g);
     }
 
+    public void addDeprecatedAttr(DeprecatedAttr d){
+        dep_attr = d;
+    }
 
+    public void addSignatureAttr(SignatureAttr s){
+        sig_attr = s;
+    }
 
+    public void addVisibilityAnnotationAttr(VisibilityAnnotationAttr v){
+        vis_annot_attr = v;
+        //vis_annot_attr.resolve(e);
+    }
 
   void resolve(ClassEnv e)
   {
@@ -63,6 +76,15 @@ public class Var
       { const_attr.resolve(e); }
     if (synth_attr != null){
         synth_attr.resolve(e);
+    }
+    if (dep_attr != null){
+        dep_attr.resolve(e);
+    }
+    if (sig_attr != null){
+        sig_attr.resolve(e);
+    }
+    if (vis_annot_attr != null){
+        vis_annot_attr.resolve(e);
     }
   }
 
@@ -76,6 +98,9 @@ public class Var
 
     if (const_attr != null) attrCnt++;
     if (synth_attr != null) attrCnt++;
+    if (dep_attr != null) attrCnt++;
+    if (sig_attr != null) attrCnt++;
+    if (vis_annot_attr != null) attrCnt ++;
     
     out.writeShort(attrCnt);
     
@@ -84,6 +109,15 @@ public class Var
     }
     if (synth_attr != null){
         synth_attr.write(e, out);
+    }
+    if (dep_attr != null){
+        dep_attr.write(e, out);
+    }
+    if (sig_attr != null){
+        sig_attr.write(e, out);
+    }
+    if (vis_annot_attr != null){
+        vis_annot_attr.write(e,out);
     }
     /*if (const_attr != null)
       { out.writeShort(attrCnt +1); const_attr.write(e, out); }
