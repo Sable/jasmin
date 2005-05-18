@@ -116,10 +116,10 @@ public class CodeAttr
 	int totalSize = 0;
 
 	
-	Enumeration enum = sootAttrValues.elements();
+	Enumeration enumeration = sootAttrValues.elements();
 	Enumeration nameEnum = sootAttrNames.elements();
-	while(enum.hasMoreElements()) {
-	    String attrValue = (String) enum.nextElement();
+	while(enumeration.hasMoreElements()) {
+	    String attrValue = (String) enumeration.nextElement();
 	    String attrName = (String) nameEnum.nextElement();
 
 	    boolean isLabel = false;//xx what if it starts with %
