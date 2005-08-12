@@ -54,7 +54,7 @@ public class Main {
     /**
      * The Jasmin version
      */
-    public static final String version = "2.2.1";
+    public static final String version = "2.2.2";
 
     /**
      * Called to assemble a single file.
