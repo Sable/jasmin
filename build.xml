@@ -13,6 +13,7 @@
         <javac
             destdir="classes"
             classpath="classes:${java_cup.jar}"
+        	target="1.4"
             debug="true"
         >
             <src path="src"/>
