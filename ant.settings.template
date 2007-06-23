@@ -6,4 +6,4 @@ java_cup.jar=${user.home}/cup-classes/
 release.loc=lib
 
 # Version of Jasmin for tagging tarballs
-jasmin.version=2.1.1
+jasmin.version=2.2.1
