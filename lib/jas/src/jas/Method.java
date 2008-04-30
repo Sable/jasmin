@@ -20,7 +20,9 @@ public class Method
   DeprecatedAttr deprAttr = null;    
   SignatureAttr sigAttr = null;    
   VisibilityAnnotationAttr vis_annot_attr = null;    
+  VisibilityAnnotationAttr invis_annot_attr = null;    
   ParameterVisibilityAnnotationAttr param_vis_annot_attr = null;    
+  ParameterVisibilityAnnotationAttr param_invis_annot_attr = null;    
   AnnotationDefaultAttr annotDef = null;    
   Vector genericAttrs = new Vector();
 
@@ -63,14 +65,24 @@ public class Method
 	    sigAttr = s;	
     }
 
-    public void addAnnotationAttr(VisibilityAnnotationAttr v)
+    public void addVisAnnotationAttr(VisibilityAnnotationAttr v)
     {
 	    vis_annot_attr = v;
     }
 
-    public void addParamAnnotationAttr(ParameterVisibilityAnnotationAttr v)
+    public void addInvisAnnotationAttr(VisibilityAnnotationAttr v)
+    {
+	    invis_annot_attr = v;
+    }
+
+    public void addVisParamAnnotationAttr(ParameterVisibilityAnnotationAttr v)
     {
 	    param_vis_annot_attr = v;
+    }
+
+    public void addInvisParamAnnotationAttr(ParameterVisibilityAnnotationAttr v)
+    {
+	    param_invis_annot_attr = v;
     }
 
     public void addAnnotationDef(AnnotationDefaultAttr v)
@@ -88,7 +100,9 @@ public class Method
     if (deprAttr != null) deprAttr.resolve(e);
     if (sigAttr != null) sigAttr.resolve(e);
     if (vis_annot_attr != null) vis_annot_attr.resolve(e);
+    if (invis_annot_attr != null) invis_annot_attr.resolve(e);
     if (param_vis_annot_attr != null) param_vis_annot_attr.resolve(e);
+    if (param_invis_annot_attr != null) param_invis_annot_attr.resolve(e);
     if (annotDef != null) annotDef.resolve(e);
   }
 
@@ -114,7 +128,13 @@ public class Method
     if (vis_annot_attr != null){
         cnt++;
     }
+    if (invis_annot_attr != null){
+        cnt++;
+    }
     if (param_vis_annot_attr != null){
+        cnt++;
+    }
+    if (param_invis_annot_attr != null){
         cnt++;
     }
     if (annotDef != null){
@@ -127,7 +147,9 @@ public class Method
     if (deprAttr != null) deprAttr.write(e, out);
     if (sigAttr != null) sigAttr.write(e, out);
     if (vis_annot_attr != null) vis_annot_attr.write(e, out);
+    if (invis_annot_attr != null) invis_annot_attr.write(e, out);
     if (param_vis_annot_attr != null) param_vis_annot_attr.write(e, out);
+    if (param_invis_annot_attr != null) param_invis_annot_attr.write(e, out);
     if (annotDef != null) annotDef.write(e, out);
     
     for(Enumeration enu = genericAttrs.elements(); enu.hasMoreElements();) {

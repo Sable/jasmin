@@ -63,8 +63,10 @@ public class ClassFile {
     boolean methSynth;
     boolean methDepr;
     String methSigAttr;
-    VisibilityAnnotationAttr methAnnotAttr;
-    ParameterVisibilityAnnotationAttr methParamAnnotAttr;
+    VisibilityAnnotationAttr methAnnotAttrVis;
+    VisibilityAnnotationAttr methAnnotAttrInvis;
+    ParameterVisibilityAnnotationAttr methParamAnnotAttrVis;
+    ParameterVisibilityAnnotationAttr methParamAnnotAttrInvis;
     ElemValPair methAnnotDef;
     
     int line_label_count, line_num;
@@ -302,8 +304,10 @@ public class ClassFile {
         methSynth = false;
         methDepr = false;
         methSigAttr = null;
-        methAnnotAttr = null;
-        methParamAnnotAttr = null;
+        methAnnotAttrVis = null;
+        methAnnotAttrInvis = null;
+        methParamAnnotAttrVis = null;
+        methParamAnnotAttrInvis = null;
         methAnnotDef = null;
     }
 
@@ -344,11 +348,17 @@ public class ClassFile {
         if (methSigAttr != null){ 
             currentMethod.addSignatureAttr(new SignatureAttr(methSigAttr));
         }
-        if (methAnnotAttr != null){ 
-            currentMethod.addAnnotationAttr(methAnnotAttr);
+        if (methAnnotAttrVis != null){ 
+            currentMethod.addVisAnnotationAttr(methAnnotAttrVis);
         }
-        if (methParamAnnotAttr != null){ 
-            currentMethod.addParamAnnotationAttr(methParamAnnotAttr);
+        if (methAnnotAttrInvis != null){ 
+            currentMethod.addInvisAnnotationAttr(methAnnotAttrInvis);
+        }
+        if (methParamAnnotAttrVis != null){ 
+            currentMethod.addVisParamAnnotationAttr(methParamAnnotAttrVis);
+        }
+        if (methParamAnnotAttrInvis != null){ 
+            currentMethod.addInvisParamAnnotationAttr(methParamAnnotAttrInvis);
         }
         if (methAnnotDef != null){ 
             methAnnotDef.setNoName();
@@ -370,8 +380,8 @@ public class ClassFile {
 	    methSynth   = false;
         methDepr    = false;
         methSigAttr = null;
-        methAnnotAttr = null;
-        methParamAnnotAttr = null;
+        methAnnotAttrVis = null;
+        methParamAnnotAttrVis = null;
         methAnnotDef = null;
 
 
@@ -860,14 +870,22 @@ public class ClassFile {
         class_env.addEnclMethAttr(new EnclMethAttr(cls, meth, sig));
     }
    
-    void addMethAnnotAttr(Object attr){
-        methAnnotAttr = (VisibilityAnnotationAttr)attr;
+    void addMethAnnotAttrVisible(Object attr){
+		methAnnotAttrVis = (VisibilityAnnotationAttr)attr;
+    }
+
+    void addMethAnnotAttrInvisible(Object attr){
+		methAnnotAttrInvis = (VisibilityAnnotationAttr)attr;
+    }
+
+    void addMethParamAnnotAttrVisible(Object attr){
+        methParamAnnotAttrVis = (ParameterVisibilityAnnotationAttr)attr;
     }
    
-    void addMethParamAnnotAttr(Object attr){
-        methParamAnnotAttr = (ParameterVisibilityAnnotationAttr)attr;
+    void addMethParamAnnotAttrInvisible(Object attr){
+        methParamAnnotAttrInvis = (ParameterVisibilityAnnotationAttr)attr;
     }
-   
+
     void addMethAnnotDefault(Object attr){
         methAnnotDef = (ElemValPair)attr;
     }

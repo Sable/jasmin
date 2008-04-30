@@ -420,14 +420,20 @@ meth_sig_attr ::= DSIG_ATTR Str:s
 meth_annotation_attr ::= visibility_type:tval SEP annotation_list:list DEND DANNOTATION_ATTR 
     {:
         RESULT = classFile.makeVisibilityAnnotation(tval, list);
-        classFile.addMethAnnotAttr(RESULT);
+        if(tval.equals("RuntimeVisible"))
+        	classFile.addMethAnnotAttrVisible(RESULT);
+        else
+            classFile.addMethAnnotAttrInvisible(RESULT);        
     :}
 ;
 
 meth_param_annotation_attr ::= DPARAM_ANNOT_ATTR visibility_type:kind SEP annotation_attr_list:list DEND DPARAM_ANNOT_ATTR
     {:
         RESULT = classFile.makeParameterVisibilityAnnotation(kind, list);
-        classFile.addMethParamAnnotAttr(RESULT);
+        if(kind.equals("RuntimeVisible"))
+        	classFile.addMethParamAnnotAttrVisible(RESULT);
+        else
+            classFile.addMethParamAnnotAttrInvisible(RESULT);        
     :}
 ;
 
