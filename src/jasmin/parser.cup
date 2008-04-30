@@ -265,9 +265,18 @@ class_sig_attr ::= signature_attr:sig_attr
     :}
 ;    
 
-class_annotation_attr ::= annotation_attr_opt:annot_attr
+class_annotation_attr ::= annotation_attr_opt:annot_attr | annotation_attr:annot_attr annotation_attr:annot_attr2
     {:
-        classFile.addClassAnnotAttr(annot_attr);
+        if(((VisibilityAnnotationAttr)annot_attr).getKind().equals("RuntimeVisible"))
+        	classFile.addClassAnnotAttrVisible(annot_attr);
+        else
+            classFile.addClassAnnotAttrInvisible(annot_attr);
+        if(annot_attr2!=null) {
+	        if(((VisibilityAnnotationAttr)annot_attr2).getKind().equals("RuntimeVisible"))
+	        	classFile.addClassAnnotAttrVisible(annot_attr2);
+	        else
+	            classFile.addClassAnnotAttrInvisible(annot_attr2);        
+        }        
     :}
 ;    
     

@@ -33,6 +33,7 @@ public class ClassEnv implements RuntimeConstants
   DeprecatedAttr deprAttr = null;
   SignatureAttr sigAttr = null;
   VisibilityAnnotationAttr visAnnotAttr = null;
+  VisibilityAnnotationAttr invisAnnotAttr = null;
   EnclMethAttr encl_meth_attr;
   boolean highVersion = false;   
   
@@ -213,6 +214,9 @@ public class ClassEnv implements RuntimeConstants
     if (visAnnotAttr != null){
         numExtra++;
     }
+    if (invisAnnotAttr != null){
+        numExtra++;
+    }
     if (encl_meth_attr != null){
         numExtra++;
     }
@@ -248,6 +252,10 @@ public class ClassEnv implements RuntimeConstants
     // visibility annotation attr
     if (visAnnotAttr != null){
         visAnnotAttr.write(this, out);
+    }
+    // visibility annotation attr runtime invisible
+    if (invisAnnotAttr != null){
+        invisAnnotAttr.write(this, out);
     }
     // inner class attr
     if (inner_class_attr != null){
@@ -323,11 +331,16 @@ public class ClassEnv implements RuntimeConstants
     sigAttr.resolve(this);
   }
   
-  public void setClassAnnotAttr(VisibilityAnnotationAttr s){
+  public void setClassAnnotAttrVis(VisibilityAnnotationAttr s){
     visAnnotAttr = s;
     visAnnotAttr.resolve(this);
+  }  
+
+  public void setClassAnnotAttrInvis(VisibilityAnnotationAttr s){
+	invisAnnotAttr = s;
+	invisAnnotAttr.resolve(this);
   }
-  
+
   public void finishInnerClassAttr(InnerClassAttr attr){
       inner_class_attr = attr;  
       inner_class_attr.resolve(this);

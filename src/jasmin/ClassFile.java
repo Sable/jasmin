@@ -204,9 +204,15 @@ public class ClassFile {
         }
     }
     
-    void addClassAnnotAttr(Object res){
+    void addClassAnnotAttrVisible(Object res){
         if (res != null){
-            class_env.setClassAnnotAttr((VisibilityAnnotationAttr)res);
+            class_env.setClassAnnotAttrVis((VisibilityAnnotationAttr)res);
+        }
+    }
+    
+    void addClassAnnotAttrInvisible(Object res){
+        if (res != null){
+            class_env.setClassAnnotAttrInvis((VisibilityAnnotationAttr)res);
         }
     }
     

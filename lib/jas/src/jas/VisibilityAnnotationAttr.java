@@ -14,6 +14,7 @@ public class VisibilityAnnotationAttr {
 
     AsciiCP attr;
     ArrayList list = new ArrayList();
+	protected String kind;
 
     void resolve(ClassEnv e){
         e.addCPItem(attr);
@@ -32,12 +33,14 @@ public class VisibilityAnnotationAttr {
     public VisibilityAnnotationAttr(String kind, ArrayList annotations) { //
         attr = new AsciiCP(kind+"Annotations");
         list = annotations;
+        this.kind = kind;
     }
 
     public VisibilityAnnotationAttr() { //
     }
 
     public void setKind(String k){
+        this.kind = k;
         attr = new AsciiCP(k+"Annotations");
     }
     
@@ -80,4 +83,8 @@ public class VisibilityAnnotationAttr {
             }
         }
     }
+
+	public String getKind() {
+		return kind;
+	}
 }
