@@ -216,15 +216,15 @@ public class ClassFile {
         }
     }
     
-    void addField(short access, String name, String sig, Object value, Object dep_attr, Object sig_attr, Object vis_annot_attr){
-        addField(access, name, sig, value, null, dep_attr, sig_attr, vis_annot_attr);
+    void addField(short access, String name, String sig, Object value, Object dep_attr, Object sig_attr, Object vis_annot_attr, Object vis_annot_attr2){
+        addField(access, name, sig, value, null, dep_attr, sig_attr, vis_annot_attr, vis_annot_attr2);
     }
 
     //
     // called by the .field directive
     //
     void addField(short access, String name,
-                                String sig, Object value, String synth, Object dep_attr, Object sig_attr, Object vis_annot_attr) {
+                                String sig, Object value, String synth, Object dep_attr, Object sig_attr, Object vis_annot_attr, Object vis_annot_attr2) {
 
 
         if (value == null) {
@@ -242,7 +242,18 @@ public class ClassFile {
             currentField.addSignatureAttr(new SignatureAttr((String)sig_attr));
         }
         if (vis_annot_attr != null){
-            currentField.addVisibilityAnnotationAttr((VisibilityAnnotationAttr)vis_annot_attr);
+            VisibilityAnnotationAttr attribute = (VisibilityAnnotationAttr)vis_annot_attr;
+            if(attribute.getKind().equals("RuntimeVisible"))
+            	currentField.addVisibilityAnnotationAttrVis(attribute);
+            else
+            	currentField.addVisibilityAnnotationAttrInvis(attribute);
+        }
+        if (vis_annot_attr2 != null){
+            VisibilityAnnotationAttr attribute = (VisibilityAnnotationAttr)vis_annot_attr2;
+            if(attribute.getKind().equals("RuntimeVisible"))
+            	currentField.addVisibilityAnnotationAttrVis(attribute);
+            else
+            	currentField.addVisibilityAnnotationAttrInvis(attribute);
         }
             
 	    /*currentField =

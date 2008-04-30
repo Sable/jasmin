@@ -268,10 +268,12 @@ class_sig_attr ::= signature_attr:sig_attr
 class_annotation_attr ::=
     annotation_attr_opt:annot_attr 
     {:
-        if(((VisibilityAnnotationAttr)annot_attr).getKind().equals("RuntimeVisible"))
-        	classFile.addClassAnnotAttrVisible(annot_attr);
-        else
-            classFile.addClassAnnotAttrInvisible(annot_attr);
+    	if(annot_attr!=null) {
+	        if(((VisibilityAnnotationAttr)annot_attr).getKind().equals("RuntimeVisible"))
+	        	classFile.addClassAnnotAttrVisible(annot_attr);
+	        else
+	            classFile.addClassAnnotAttrInvisible(annot_attr);
+	    }
     :}
     |
     annotation_attr:annot_attr annotation_attr:annot_attr2
@@ -298,13 +300,22 @@ field_item ::= field_spec field_attrs | field_spec;
 field_spec ::=
     DFIELD access:a Str:name Word:sig optional_default:v SEP deprecated_attr:dep_attr signature_attr:sig_attr annotation_attr_opt:vis_annot_attr
         {:
-            classFile.addField((short)a.intValue(), name, sig,
-                            v, dep_attr, sig_attr, vis_annot_attr);
+            classFile.addField((short)a.intValue(), name, sig, v, dep_attr, sig_attr, vis_annot_attr, null);
         :}
    |
    DFIELD access:a Str:name Word:sig optional_default:v DSYNTHETIC SEP deprecated_attr:dep_attr signature_attr:sig_attr annotation_attr_opt:vis_annot_attr
         {:
-            classFile.addField((short)a.intValue(), name, sig, v, "synth", dep_attr, sig_attr, vis_annot_attr);
+            classFile.addField((short)a.intValue(), name, sig, v, "synth", dep_attr, sig_attr, vis_annot_attr, null);
+        :}
+   |
+    DFIELD access:a Str:name Word:sig optional_default:v SEP deprecated_attr:dep_attr signature_attr:sig_attr annotation_attr:vis_annot_attr1 annotation_attr:vis_annot_attr2
+        {:
+            classFile.addField((short)a.intValue(), name, sig, v, dep_attr, sig_attr, vis_annot_attr1, vis_annot_attr2);
+        :}
+   |
+   DFIELD access:a Str:name Word:sig optional_default:v DSYNTHETIC SEP deprecated_attr:dep_attr signature_attr:sig_attr annotation_attr:vis_annot_attr1 annotation_attr:vis_annot_attr2
+        {:
+            classFile.addField((short)a.intValue(), name, sig, v, "synth", dep_attr, sig_attr, vis_annot_attr1, vis_annot_attr2);
         :}
    ;
 

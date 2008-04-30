@@ -23,6 +23,7 @@ public class Var
   DeprecatedAttr dep_attr = null;
   SignatureAttr sig_attr = null;
   VisibilityAnnotationAttr vis_annot_attr = null;
+  VisibilityAnnotationAttr invis_annot_attr = null;
   
   Vector genericAttrs = new Vector();
     
@@ -63,9 +64,12 @@ public class Var
         sig_attr = s;
     }
 
-    public void addVisibilityAnnotationAttr(VisibilityAnnotationAttr v){
+    public void addVisibilityAnnotationAttrVis(VisibilityAnnotationAttr v){
         vis_annot_attr = v;
-        //vis_annot_attr.resolve(e);
+    }
+
+    public void addVisibilityAnnotationAttrInvis(VisibilityAnnotationAttr v){
+        invis_annot_attr = v;
     }
 
   void resolve(ClassEnv e)
@@ -86,6 +90,9 @@ public class Var
     if (vis_annot_attr != null){
         vis_annot_attr.resolve(e);
     }
+    if (invis_annot_attr != null){
+        invis_annot_attr.resolve(e);
+    }
   }
 
   void write(ClassEnv e, DataOutputStream out)
@@ -101,6 +108,7 @@ public class Var
     if (dep_attr != null) attrCnt++;
     if (sig_attr != null) attrCnt++;
     if (vis_annot_attr != null) attrCnt ++;
+    if (invis_annot_attr != null) attrCnt ++;
     
     out.writeShort(attrCnt);
     
@@ -118,6 +126,9 @@ public class Var
     }
     if (vis_annot_attr != null){
         vis_annot_attr.write(e,out);
+    }
+    if (invis_annot_attr != null){
+        invis_annot_attr.write(e,out);
     }
     /*if (const_attr != null)
       { out.writeShort(attrCnt +1); const_attr.write(e, out); }
