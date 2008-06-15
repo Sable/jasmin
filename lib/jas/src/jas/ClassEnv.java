@@ -138,7 +138,22 @@ public class ClassEnv implements RuntimeConstants
   public void write(DataOutputStream out)
     throws IOException, jasError
   {
-				// Headers
+	boolean needAnno = false;		
+	if(visAnnotAttr != null || invisAnnotAttr != null)
+		needAnno = true;
+	for(Method m : (Vector<Method>)methods) {
+		if(m.invis_annot_attr!=null || m.vis_annot_attr!=null ||
+		   m.param_invis_annot_attr!=null ||m.param_vis_annot_attr!=null)
+			needAnno = true;
+	}
+	for(Var f : (Vector<Var>)vars) {
+		if(f.invis_annot_attr!=null || f.vis_annot_attr!=null)
+			needAnno = true;
+	}
+		  
+	if(needAnno) setHighVersion(true);
+	
+	// Headers
     out.writeInt(magic);
     out.writeShort(version_lo);
     out.writeShort(version_hi);
