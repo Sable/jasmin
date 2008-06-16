@@ -5,6 +5,7 @@ import java.io.*;
 import java.util.Hashtable;
 import java.util.Enumeration;
 import java.util.Vector;
+import java.util.Iterator;
 
 /**
  * This is the place where all information about the class to
@@ -141,12 +142,14 @@ public class ClassEnv implements RuntimeConstants
 	boolean needAnno = false;		
 	if(visAnnotAttr != null || invisAnnotAttr != null)
 		needAnno = true;
-	for(Method m : (Vector<Method>)methods) {
+	for(Iterator i = methods.iterator();i.hasNext();) {
+		Method m = (Method) i.next();
 		if(m.invis_annot_attr!=null || m.vis_annot_attr!=null ||
 		   m.param_invis_annot_attr!=null ||m.param_vis_annot_attr!=null)
 			needAnno = true;
 	}
-	for(Var f : (Vector<Var>)vars) {
+        for(Iterator i = vars.iterator();i.hasNext();) {
+                Var f = (Var) i.next();
 		if(f.invis_annot_attr!=null || f.vis_annot_attr!=null)
 			needAnno = true;
 	}
