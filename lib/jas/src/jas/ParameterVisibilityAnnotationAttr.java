@@ -46,7 +46,7 @@ public class ParameterVisibilityAnnotationAttr {
     }
 
     int size(){
-        int i = 2;
+        int i = 1;//for num_parameters
         if (list != null){
             Iterator it = list.iterator();
             while (it.hasNext()){
@@ -64,11 +64,10 @@ public class ParameterVisibilityAnnotationAttr {
         out.writeShort(e.getCPIndex(attr));
         out.writeInt(size()); // fixed length
         if (list == null){
-            out.writeShort(0);
+            out.writeByte(0);
         }
         else {
-            out.writeShort(list.size());
-            //System.out.println("num params: "+list.size());
+            out.writeByte(list.size());
         }
         if (list != null){
             Iterator it = list.iterator();
@@ -79,7 +78,6 @@ public class ParameterVisibilityAnnotationAttr {
                 }
                 else {
                     out.writeShort(vAttr.getList().size());
-                    //System.out.println("num annots: "+vAttr.getList().size());
                 }
 
                 if (vAttr.getList() != null){

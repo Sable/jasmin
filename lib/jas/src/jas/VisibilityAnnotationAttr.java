@@ -53,7 +53,7 @@ public class VisibilityAnnotationAttr {
     }
     
     int size(){
-        int i = 2;
+        int i = 2;//for num_annotations
         if (list != null){
             Iterator it = list.iterator();
             while (it.hasNext()){
