@@ -178,7 +178,6 @@ class_spec ::=
         {:
             classFile.setClass(name,
                 (short)(a.intValue() |
-                        RuntimeConstants.ACC_SUPER |
                         RuntimeConstants.ACC_INTERFACE));
         :}
   ;
