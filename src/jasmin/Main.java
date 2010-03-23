@@ -8,8 +8,15 @@
 
 package jasmin;
 
-import java.io.*;
 import jas.jasError;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * Main is the main entry point for Jasmin - it supplies the main()
@@ -54,7 +61,7 @@ public class Main {
     /**
      * The Jasmin version
      */
-    public static final String version = "2.3.0";
+    public final static String version = Main.class.getPackage().getImplementationVersion() == null ? "trunk" : Main.class.getPackage().getImplementationVersion();
 
     /**
      * Called to assemble a single file.

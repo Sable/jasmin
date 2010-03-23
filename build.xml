@@ -99,9 +99,17 @@
     </target>
 
     <target name="jasmin-jar" depends="compile">
-        <jar destfile="${release.loc}/jasminclasses-${jasmin.version}.jar">
+    	<mkdir dir="META-INF"/>
+
+        <manifest file="META-INF/MANIFEST.MF">
+           <attribute name="Main-Class" value="jasmin.Main"/>
+           <attribute name="Implementation-Version" value="${jasmin.version}"/> 
+        </manifest>
+           	
+        <jar destfile="${release.loc}/jasminclasses-${jasmin.version}.jar" manifest="META-INF/MANIFEST.MF">
             <fileset dir="classes"/>
         </jar>
+		<delete dir="META-INF"/>
     </target>
 
     <target name="barebones" depends="clean,settings">
