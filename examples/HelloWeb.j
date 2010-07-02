@@ -29,7 +29,7 @@
 .class public HelloWeb
 .super java/applet/Applet
 
-.field private font Ljava/awt/Font;
+.field private "font" Ljava/awt/Font;
 
 
 ; my init() method - allocate a font and assign it to this.font.
