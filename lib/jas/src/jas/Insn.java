@@ -196,6 +196,9 @@ public class Insn implements RuntimeConstants
       case opc_putfield:
         operand = new CPOperand(arg);
         break;
+      case opc_invokedynamic:
+          operand = new PaddedCPOperand(arg);
+          break;
       case opc_ldc2_w:
       case opc_ldc_w:
         //System.out.println("ldc_w: arg: "+arg);

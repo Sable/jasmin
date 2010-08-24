@@ -558,7 +558,12 @@ public class ClassFile {
             String split[] = ScannerUtils.splitClassMethodSignature(val);
             inst = new Insn(insn.opcode,
                          new MethodCP(split[0], split[1], split[2]));
-        } else if (insn.args.equals("constant")) {
+        } 
+        else if (insn.args.equals("invokedynamic")) {
+        	String split[] = ScannerUtils.splitMethodSignature(val);
+        	inst = new Insn(insn.opcode, new NameTypeCP(split[0], split[1]));
+        }
+        else if (insn.args.equals("constant")) {
             //System.out.println("constant");
             inst = new Insn(insn.opcode, new ClassCP(val));
         } else if (insn.args.equals("atype")) {

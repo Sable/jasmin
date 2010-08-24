@@ -145,6 +145,24 @@ class CPOperand extends InsnOperand
   }
 }
 
+class PaddedCPOperand extends CPOperand {
+
+	PaddedCPOperand(CP cpe) {
+		super(cpe);
+	}
+	
+	void write(ClassEnv e, CodeAttr ce, DataOutputStream out)
+			throws IOException, jasError {
+		super.write(e, ce, out);
+		//add padding ("reserved for future use")
+		out.writeShort(0);
+	}
+	
+	int size(ClassEnv ce, CodeAttr code) {		
+		return super.size(ce, code) + 2 /*2 bytes padding*/;
+	}
+}
+
                                 // these are unique enough that
                                 // they need a separate handler for their
                                 // args

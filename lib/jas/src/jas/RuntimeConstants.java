@@ -244,7 +244,7 @@ public interface RuntimeConstants {
     public static final int opc_invokespecial = 183;
     public static final int opc_invokestatic = 184;
     public static final int opc_invokeinterface = 185;
-    public static final int opc_xxxunusedxxx = 186;
+    public static final int opc_invokedynamic = 186;
     public static final int opc_new = 187;
     public static final int opc_newarray = 188;
     public static final int opc_anewarray = 189;
@@ -311,7 +311,7 @@ public interface RuntimeConstants {
         "opc_freturn", "opc_dreturn", "opc_areturn", "opc_return",
         "opc_getstatic", "opc_putstatic", "opc_getfield", "opc_putfield",
         "opc_invokevirtual", "opc_invokespecial", "opc_invokestatic",
-        "opc_invokeinterface", "opc_xxxunusedxxx", "opc_new", "opc_newarray",
+        "opc_invokeinterface", "opc_invokedynamic", "opc_new", "opc_newarray",
         "opc_anewarray", "opc_arraylength", "opc_athrow", "opc_checkcast",
         "opc_instanceof", "opc_monitorenter", "opc_monitorexit", "opc_wide",
         "opc_multianewarray", "opc_ifnull", "opc_ifnonnull", "opc_goto_w",

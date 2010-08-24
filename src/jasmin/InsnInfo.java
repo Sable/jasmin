@@ -191,6 +191,7 @@ class InsnInfo {
         addInfo("invokespecial", RuntimeConstants.opc_invokenonvirtual, "method");
         addInfo("invokestatic", RuntimeConstants.opc_invokestatic, "method");
         addInfo("invokevirtual", RuntimeConstants.opc_invokevirtual, "method");
+        addInfo("invokedynamic", RuntimeConstants.opc_invokedynamic, "invokedynamic");
         addInfo("ior", RuntimeConstants.opc_ior, "");
         addInfo("irem", RuntimeConstants.opc_irem, "");
         addInfo("ireturn", RuntimeConstants.opc_ireturn, "");
