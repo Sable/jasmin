@@ -187,6 +187,8 @@ public class Insn implements RuntimeConstants
       case opc_invokenonvirtual:
       case opc_invokestatic:
       case opc_invokevirtual:
+      //INSERTED
+      case opc_invokedynamic:
       case opc_new:
       case opc_checkcast:
       case opc_instanceof:
@@ -219,18 +221,25 @@ public class Insn implements RuntimeConstants
   { if (operand != null) { operand.resolve(e); } }
 
   void write(ClassEnv e, CodeAttr ce, DataOutputStream out)
-    throws IOException, jasError
+  throws IOException, jasError
   {
-    if (operand != null)
-      operand.writePrefix(e, ce, out);
-    out.writeByte((byte) opc);
-    if (operand != null)
-      operand.write(e, ce, out);
+	  if (operand != null)
+		  operand.writePrefix(e, ce, out);
+	  out.writeByte((byte) opc);
+	  if (operand != null)
+		  operand.write(e, ce, out);
+	  //INSERTED Insn.java
+	  if (this.opc == opc_invokedynamic)
+		  out.writeShort(0);
   }
   int size(ClassEnv e, CodeAttr ce)
-    throws jasError
+  throws jasError
   {
-    if (operand == null) return 1;
-    return (1 + operand.size(e, ce));
+	  if (operand == null) return 1;
+	  //INSERTED Insn.java
+	  if (this.opc == opc_invokedynamic) {
+		  return (3 + operand.size(e, ce));
+	  }
+	  return (1 + operand.size(e, ce));
   }
 }
