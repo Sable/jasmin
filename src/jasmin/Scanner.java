@@ -23,9 +23,10 @@ import jas.*;
 import java_cup.runtime.*;
 import java.util.*;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 class Scanner implements java_cup.runtime.Scanner {
-    InputStream inp;
+    InputStreamReader inp;
 
     // single lookahead character
     int next_char;
@@ -94,7 +95,7 @@ class Scanner implements java_cup.runtime.Scanner {
     final static int BIGNUM=65000;
     public Scanner(InputStream i) throws java.io.IOException
     {
-	inp = i;
+	inp = new InputStreamReader(i);
         line_num = 1;
         char_num = 0;
         line = new StringBuffer();
