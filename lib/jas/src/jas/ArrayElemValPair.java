@@ -34,13 +34,14 @@ public class ArrayElemValPair extends ElemValPair {
     }
 
     public void setNoName(){
-        if (list == null) return;
-        Iterator it = list.iterator();
-        while (it.hasNext()){
-            ((ElemValPair)it.next()).setNoName();
-        }
+        super.setNoName();
+        if (list == null) return; 
+        Iterator it = list.iterator(); 
+        while (it.hasNext()){ 
+            ((ElemValPair)it.next()).setNoName(); 
+        } 
     }
-
+    
     public ArrayElemValPair(String name, char kind) { //
         super(name, kind);
     }
