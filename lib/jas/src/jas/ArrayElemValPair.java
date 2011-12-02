@@ -34,12 +34,13 @@ public class ArrayElemValPair extends ElemValPair {
     }
 
     public void setNoName(){
-        super.setNoName();
-        if (list == null) return; 
-        Iterator it = list.iterator(); 
-        while (it.hasNext()){ 
-            ((ElemValPair)it.next()).setNoName(); 
-        } 
+        if(name.uniq.equals("default")) // check if the annotation has no name
+            super.setNoName();
+        if (list == null) return;
+        Iterator it = list.iterator();
+        while (it.hasNext()){
+            ((ElemValPair)it.next()).setNoName();
+        }
     }
     
     public ArrayElemValPair(String name, char kind) { //
