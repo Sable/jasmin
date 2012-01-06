@@ -36,6 +36,7 @@ public class ClassEnv implements RuntimeConstants
   VisibilityAnnotationAttr visAnnotAttr = null;
   VisibilityAnnotationAttr invisAnnotAttr = null;
   EnclMethAttr encl_meth_attr;
+  BootstrapMethodsAttribute bsm_attr = null;
   boolean highVersion = false;   
   
   public ClassEnv()
@@ -423,4 +424,9 @@ public class ClassEnv implements RuntimeConstants
       throw new jasError("Item " + cp + " not in the class");
     return (idx.intValue());
   }
+
+public void addBootstrapMethod(NameTypeCP bsm) {	
+	//TODO implement
+	throw new UnsupportedOperationException();
+}
 }

@@ -603,6 +603,11 @@ simple_instruction ::=
             classFile.plant(i, n1, n2);
         :}
     |
+    Insn:i Str:n1 Word:n2 Word:n3
+        {:
+            classFile.plant(i, n1, n2, n3);
+        :}
+    |
     Insn:i Str:n
         {:
             classFile.plantString(i, n);

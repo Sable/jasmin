@@ -25,6 +25,8 @@ public interface RuntimeConstants {
     public static final int CONSTANT_METHOD = 10;
     public static final int CONSTANT_INTERFACEMETHOD = 11;
     public static final int CONSTANT_NAMEANDTYPE = 12;
+    public static final int CONSTANT_METHOD_HANDLE = 15;
+    public static final int CONSTANT_INVOKE_DYNAMIC = 18;
 
     // access flags
     public static final int ACC_PUBLIC = 1;

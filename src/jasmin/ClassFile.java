@@ -559,10 +559,6 @@ public class ClassFile {
             inst = new Insn(insn.opcode,
                          new MethodCP(split[0], split[1], split[2]));
         } 
-        else if (insn.args.equals("invokedynamic")) {
-        	String split[] = ScannerUtils.splitMethodSignature(val);
-        	inst = new Insn(insn.opcode, new NameTypeCP(split[0], split[1]));
-        }
         else if (insn.args.equals("constant")) {
             //System.out.println("constant");
             inst = new Insn(insn.opcode, new ClassCP(val));
@@ -616,13 +612,37 @@ public class ClassFile {
             String split[] = ScannerUtils.splitClassField(v1);
             inst = new Insn(info.opcode,
 			    new FieldCP(split[0], split[1], v2));
-        } else {
+        }
+        else {
             throw new jasError("Bad arguments for instruction " + name);
         }
 
 	code.addInsn(inst);
 
     }
+    
+    
+    /*
+     * used for invokedynamic instructions 
+     */
+    void plant(String name, String v1, String v2, String v3)
+    throws jasError
+		{
+    	//TODO implement
+//		InsnInfo info = InsnInfo.get(name);
+//		CodeAttr code = _getCode();
+//		autoNumber();
+//		Insn inst = null;
+//		if (name.equals("invokedynamic")) {
+//		    	String methodName = v1, methodSig = v2, bootstrapMethodSig = v3;
+//		    	
+//		} else {
+//		    throw new jasError("Bad arguments for instruction " + name);
+//		}
+//		
+//		code.addInsn(inst);
+//		
+		}
 
     //
     // Lookupswitch instruction

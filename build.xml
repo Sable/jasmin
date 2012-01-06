@@ -13,8 +13,8 @@
         <javac
             destdir="classes"
             classpath="classes:${java_cup.jar}"
-	    source="1.4"
-            target="1.4"
+	    source="1.5"
+            target="1.5"
             debug="true"
         >
             <src path="src"/>
@@ -40,8 +40,8 @@
             classpath="classes"
             debug="true"
             deprecation="true"
-	    source="1.4"
-            target="1.4"
+	    source="1.5"
+            target="1.5"
         >
             <src path="lib/jas/src/scm"/>
             <src path="generated/scm"/>
@@ -53,8 +53,8 @@
             destdir="classes"
             classpath="classes"
             debug="true"
-	    source="1.4"
-            target="1.4"
+	    source="1.5"
+            target="1.5"
         >
             <src path="lib/jas/src/scm/autogen/"/>
         </javac>
@@ -79,8 +79,8 @@
             destdir="classes"
             optimize="true"
             debug="true"
-	    source="1.4"
-            target="1.4"
+	    source="1.5"
+            target="1.5"
         >
             <src path="lib/jas/src/jas"/>
         </javac>
