@@ -11,17 +11,22 @@ import java.io.*;
 public class MethodHandleCP extends CP implements RuntimeConstants
 {
   int kind;
-  NameTypeCP fieldOrMethod;
+  CP fieldOrMethod;
 
   /**
    * @param cname Class in which method exists
-   * @param varname name of field or method
+   * @param ownerName name of class owning the method or field
+   * @param fieldOrMethodName name of field or method
    * @param sig Signature of field r method
    */
-  public MethodHandleCP(int kind, String varname, String sig)
+  public MethodHandleCP(int kind, String ownerName, String fieldOrMethodName, String sig)
   {
-    uniq = kind + "&%$91&" + varname + "*(012$" + sig;
-    fieldOrMethod = new NameTypeCP(varname, sig);
+    uniq = kind + "$gfd¤" + ownerName + "&%$91&" + fieldOrMethodName + "*(012$" + sig;
+    if(kind<5) { //first for kinds refer to fields
+    	fieldOrMethod = new FieldCP(ownerName, fieldOrMethodName, sig);
+    } else {
+    	fieldOrMethod = new MethodCP(ownerName, fieldOrMethodName, sig);
+    }
   }
 
   void resolve(ClassEnv e)

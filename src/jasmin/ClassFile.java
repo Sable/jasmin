@@ -17,6 +17,7 @@ package jasmin;
 
 
 import jas.*;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.DataOutputStream;
@@ -628,20 +629,34 @@ public class ClassFile {
     void plant(String name, String v1, String v2, String v3)
     throws jasError
 		{
-    	//TODO implement
 //		InsnInfo info = InsnInfo.get(name);
 //		CodeAttr code = _getCode();
 //		autoNumber();
 //		Insn inst = null;
 //		if (name.equals("invokedynamic")) {
-//		    	String methodName = v1, methodSig = v2, bootstrapMethodSig = v3;
+//		    	String utf8MethodName = v1;
+//		    	String methodSig = v2;
+//		    	//FIXME must also work for field signatures
+//		    	String bsmNameAndSig = v3.substring(0,v3.lastIndexOf("("));
+//		    	String bsmName = bsmNameAndSig.substring(0,bsmNameAndSig.indexOf("("));
+//		    	String bsmClassName = bsmName.substring(0,bsmName.lastIndexOf("/"));
+//		    	String bsmMethodName = bsmName.substring(bsmName.lastIndexOf("/")+1);
+//		    	String bsmSig = bsmNameAndSig.substring(bsmNameAndSig.indexOf("("));
+//		    	String bsmArgs = v3.substring(v3.lastIndexOf("(")+1,v3.length()-1);
+//		    	String bsmArgsList[] = bsmArgs.split(",");		    	
 //		    	
+//		    	//FIXME determine kind
+//		    	final int kind = 0;
+//		    	
+//		    	//maintain BootstrapMethods attribute
+//		    	
+//		    	inst = new Insn(info.opcode, new InvokeDynamicCP(kind, bsmClassName,bsmMethodName,bsmSig,utf8MethodName,methodSig));
 //		} else {
 //		    throw new jasError("Bad arguments for instruction " + name);
 //		}
 //		
 //		code.addInsn(inst);
-//		
+		
 		}
 
     //

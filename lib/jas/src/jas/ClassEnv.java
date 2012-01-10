@@ -425,8 +425,12 @@ public class ClassEnv implements RuntimeConstants
     return (idx.intValue());
   }
 
-public void addBootstrapMethod(NameTypeCP bsm) {	
+public void addBootstrapMethod(MethodHandleCP bsm) {	
 	//TODO implement
 	throw new UnsupportedOperationException();
 }
+
+	public int getBootstrapTableIndex(MethodHandleCP bsm) {
+		throw new UnsupportedOperationException();
+	}
 }
