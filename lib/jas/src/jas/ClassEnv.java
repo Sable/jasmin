@@ -7,6 +7,8 @@ import java.util.Enumeration;
 import java.util.Vector;
 import java.util.Iterator;
 
+import soot.toolkits.scalar.Pair;
+
 /**
  * This is the place where all information about the class to
  * be created resides.
@@ -37,7 +39,6 @@ public class ClassEnv implements RuntimeConstants
   VisibilityAnnotationAttr invisAnnotAttr = null;
   EnclMethAttr encl_meth_attr;
   BootstrapMethodsAttribute bsm_attr = null;
-  boolean highVersion = false;   
   
   public ClassEnv()
   {
@@ -52,13 +53,17 @@ public class ClassEnv implements RuntimeConstants
     vars = new Vector();
     methods = new Vector();
     generic = new Vector();
+    bsm_attr = null;
   }
 
-  public void setHighVersion(boolean b){
-    highVersion = b;
-    //System.out.println("setting high version number");
-    version_lo = (short) JAVA_MINOR_HIGH_VERSION;
-    version_hi = (short) JAVA_HIGH_VERSION;
+  public void requireJava1_4(){
+    version_lo = (short) Math.max(version_lo,(short) JAVA_MINOR_HIGH_VERSION);
+    version_hi = (short) Math.max(version_hi,(short) JAVA_HIGH_VERSION);
+  }
+  
+  public void requireJava7(){
+    version_lo = (short) JAVA7_MINOR_HIGH_VERSION;
+    version_hi = (short) JAVA7_HIGH_VERSION;
   }
   
   /**
@@ -155,7 +160,7 @@ public class ClassEnv implements RuntimeConstants
 			needAnno = true;
 	}
 		  
-	if(needAnno) setHighVersion(true);
+	if(needAnno) requireJava1_4();
 	
 	// Headers
     out.writeInt(magic);
@@ -239,6 +244,9 @@ public class ClassEnv implements RuntimeConstants
     if (encl_meth_attr != null){
         numExtra++;
     }
+    if (bsm_attr != null){
+        numExtra++;
+    }
     
     out.writeShort(numExtra);
     if (source != null)
@@ -279,6 +287,10 @@ public class ClassEnv implements RuntimeConstants
     // inner class attr
     if (inner_class_attr != null){
         inner_class_attr.write(this, out);
+    }
+    // bootstrap method table attribute
+    if (bsm_attr != null){
+        bsm_attr.write(this, out);
     }
     out.flush();
   }
@@ -425,12 +437,16 @@ public class ClassEnv implements RuntimeConstants
     return (idx.intValue());
   }
 
-public void addBootstrapMethod(MethodHandleCP bsm) {	
-	//TODO implement
-	throw new UnsupportedOperationException();
-}
-
-	public int getBootstrapTableIndex(MethodHandleCP bsm) {
-		throw new UnsupportedOperationException();
+	public int addBootstrapMethod(MethodHandleCP bsm, CP[] argCPs) {	
+		addCPItem(bsm);
+		for (CP cp : argCPs) {
+			addCPItem(cp);
+		}
+		if(bsm_attr==null) {
+		    bsm_attr = new BootstrapMethodsAttribute();
+		    bsm_attr.resolve(this);
+		}
+		requireJava7();
+		return bsm_attr.addEntry(bsm, argCPs);
 	}
 }
