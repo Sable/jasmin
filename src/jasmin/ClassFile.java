@@ -16,6 +16,7 @@ package jasmin;
 
 
 
+import static jas.MethodHandleCP.STATIC_METHOD_KIND;
 import jas.*;
 
 import java.io.InputStream;
@@ -640,39 +641,33 @@ public class ClassFile {
 				
 		    	String utf8MethodName = v1;
 		    	String methodSig = v2;
-		    	//FIXME must also work for field signatures
-		    	String bsmNameAndSig = v3.substring(0,v3.lastIndexOf("("));
+		    	String bsmNameAndSig = v3.substring(0,v3.indexOf("Ljava/lang/invoke/CallSite;("));
 		    	String bsmName = bsmNameAndSig.substring(0,bsmNameAndSig.indexOf("("));
 		    	String bsmClassName = bsmName.substring(0,bsmName.lastIndexOf("/"));
 		    	String bsmMethodName = bsmName.substring(bsmName.lastIndexOf("/")+1);
 		    	String bsmSig = bsmNameAndSig.substring(bsmNameAndSig.indexOf("("));
-		    	String bsmArgs = v3.substring(v3.lastIndexOf("(")+1,v3.length()-1);
+		    	String bsmArgs = v3.substring(v3.indexOf("Ljava/lang/invoke/CallSite;(")+"Ljava/lang/invoke/CallSite;(".length(),v3.length()-1);
 		    	String bsmArgsList[] = bsmArgs.split(",");		    	
 		    	
-		    	//FIXME: initial arguments are optional!
-		    	if(!bsmSig.startsWith("(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;")) {
-		    		throw new InternalError("Arguments to bootstrap method do not start with Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;"+ bsmSig);
-		    	}
-		    	String otherArgs = bsmSig.substring("(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;".length(),bsmSig.lastIndexOf(")"));
 		    	CP[] argCPs;
-		    	if(!otherArgs.isEmpty()) {
-					String[] bsmArgTypes = otherArgs.split(",");
-					argCPs = new CP[bsmArgTypes.length];		    	
-			    	for (int i = 0; i < bsmArgTypes.length; i++) {
-			    		String sig = bsmArgTypes[i];
+		    	if(!bsmArgs.isEmpty()) {
+					argCPs = new CP[bsmArgsList.length];		    	
+			    	for (int i = 0; i < bsmArgsList.length; i++) {
+			    		String sig = bsmArgsList[i].substring(1,bsmArgsList[i].indexOf(")"));
+			    		String val = bsmArgsList[i].substring(bsmArgsList[i].indexOf(")")+1);
 			    		CP cp = null;
 			            if (sig.equals("I")||sig.equals("Z")||sig.equals("C")||sig.equals("B")||sig.equals("S")) {
-			                cp = new IntegerCP(Integer.parseInt(bsmArgsList[i]));
+			                cp = new IntegerCP(Integer.parseInt(val));
 			            } else if (sig.equals("F")) {
-			                cp = new FloatCP(Float.parseFloat(bsmArgsList[i]));
+			                cp = new FloatCP(Float.parseFloat(val));
 			            } else if (sig.equals("D")) {
-			                cp = new DoubleCP(Double.parseDouble(bsmArgsList[i]));
+			                cp = new DoubleCP(Double.parseDouble(val));
 			            } else if (sig.equals("J")) {
-			                cp = new LongCP(Long.parseLong(bsmArgsList[i]));
+			                cp = new LongCP(Long.parseLong(val));
 			            } else if (sig.equals("Ljava/lang/String;")) {
-			               cp = new StringCP(bsmArgsList[i]);
+			               cp = new StringCP(val);
 			            } else if (sig.equals("Ljava/lang/Class;")) {
-				               cp = new ClassCP(bsmArgsList[i]);
+				               cp = new ClassCP(val);
 			            } else {
 			            	throw new UnsupportedOperationException("static argument type not currently supported: "+sig);
 			            }
@@ -682,13 +677,12 @@ public class ClassFile {
 		    		argCPs = new CP[0];
 		    	}
 		    	
-		    	//FIXME determine kind
-		    	final int STATIC_METHOD_KIND = 6;
-		    	
 		    	//maintain BootstrapMethods attribute
-		    	int index = class_env.addBootstrapMethod(new MethodHandleCP(STATIC_METHOD_KIND, bsmClassName, bsmMethodName, bsmSig),argCPs);
+		    	int index = class_env.addBootstrapMethod(new MethodHandleCP(
+		    			STATIC_METHOD_KIND, //bootstrap methods are always static methods
+		    			bsmClassName, bsmMethodName, bsmSig),argCPs);
 		    	
-		    	inst = new Insn(info.opcode, new InvokeDynamicCP(STATIC_METHOD_KIND, bsmClassName,bsmMethodName,bsmSig,utf8MethodName,methodSig,index));
+		    	inst = new Insn(info.opcode, new InvokeDynamicCP(bsmClassName,bsmMethodName,bsmSig,utf8MethodName,methodSig,index));
 		} else {
 		    throw new jasError("Bad arguments for instruction " + name);
 		}

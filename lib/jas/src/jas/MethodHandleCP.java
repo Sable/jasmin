@@ -10,6 +10,9 @@ import java.io.*;
 
 public class MethodHandleCP extends CP implements RuntimeConstants
 {
+	public final static int STATIC_METHOD_KIND = 6;
+
+	
   int kind;
   CP fieldOrMethod;
 
