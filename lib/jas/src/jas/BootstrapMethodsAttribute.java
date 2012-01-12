@@ -4,8 +4,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import soot.toolkits.scalar.Pair;
-
 public class BootstrapMethodsAttribute {
 	
     static CP attr = new AsciiCP("BootstrapMethods");

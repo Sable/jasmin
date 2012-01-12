@@ -7,8 +7,6 @@ import java.util.Enumeration;
 import java.util.Vector;
 import java.util.Iterator;
 
-import soot.toolkits.scalar.Pair;
-
 /**
  * This is the place where all information about the class to
  * be created resides.
