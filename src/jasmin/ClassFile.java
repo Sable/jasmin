@@ -641,7 +641,7 @@ public class ClassFile {
 				
 		    	String utf8MethodName = v1;
 		    	String methodSig = v2;
-		    	String bsmNameAndSig = v3.substring(0,v3.indexOf("Ljava/lang/invoke/CallSite;("));
+		    	String bsmNameAndSig = v3.substring(0,v3.indexOf("Ljava/lang/invoke/CallSite;(")+"Ljava/lang/invoke/CallSite;".length());
 		    	String bsmName = bsmNameAndSig.substring(0,bsmNameAndSig.indexOf("("));
 		    	String bsmClassName = bsmName.substring(0,bsmName.lastIndexOf("/"));
 		    	String bsmMethodName = bsmName.substring(bsmName.lastIndexOf("/")+1);
