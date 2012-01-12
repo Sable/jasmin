@@ -4,6 +4,10 @@
 	<classpathentry excluding="scm/autogen/|scm/autogen/" kind="src" path="lib/jas/src"/>
 	<classpathentry kind="src" path="lib/jas/src/scm/autogen"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/libs"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/libs">
+		<accessrules>
+			<accessrule kind="nonaccessible" pattern="soot/**"/>
+		</accessrules>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
