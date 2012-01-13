@@ -25,8 +25,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.*;
 
-import com.sun.tracing.dtrace.ArgsAttributes;
-
 /**
  * A ClassFile object is used to represent the binary data that makes up a
  * Java class file - it also serves as the public
