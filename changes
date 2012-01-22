@@ -1,5 +1,8 @@
 Jasmin Revision History                                 Sable Research Group
 
+Jan 22, 2012				[Eric Bodden]
+	added support for invokedynamic; see tutorial on the Soot webpage
+
 May 28, 2004                [Chris Pickett]
     added .no_super directive (for compiling java.lang.Object)
 

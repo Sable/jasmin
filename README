@@ -1,12 +1,12 @@
-Jasmin README file			   May 28, 2004, Patrick Lam
+Jasmin README file			   Jan 22nd, 2012, Eric Bodden
 
-Welcome to Jasmin version sable-1.2.7.
+Welcome to Jasmin version sable-2.5.0.
 
 This is a specialized version of jasmin which is used as a back end for the
 Soot framework.  
 
 Note that with permission from Jonathan Meyer, this package is distributed
-under the GNU Library General Public License and so can be distributed with
+under the GNU Lesser General Public License and so can be distributed with
 Soot. 
 
 
