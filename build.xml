@@ -75,6 +75,7 @@
     </target>
    
     <target name="jas">
+    	<mkdir dir="classes"/>
         <javac
             destdir="classes"
             optimize="true"
