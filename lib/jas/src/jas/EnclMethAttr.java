@@ -19,7 +19,8 @@ public class EnclMethAttr {
     void resolve(ClassEnv e){
         e.addCPItem(attr);
         e.addCPItem(cls);
-        e.addCPItem(meth);
+        if (null != meth)
+        	e.addCPItem(meth);
     }
 
     /**
@@ -29,7 +30,8 @@ public class EnclMethAttr {
     */
     public EnclMethAttr(String a, String b, String c) { //
         cls = new ClassCP(a);
-        meth = new NameTypeCP(b, c);
+        if (!b.isEmpty() && !c.isEmpty())
+        	meth = new NameTypeCP(b, c);
     }
 
     int size(){
@@ -44,6 +46,6 @@ public class EnclMethAttr {
         out.writeShort(e.getCPIndex(attr));
         out.writeInt(4); // fixed length
         out.writeShort(e.getCPIndex(cls));
-        out.writeShort(e.getCPIndex(meth));
+        out.writeShort(null == meth ? 0 : e.getCPIndex(meth));
     }
 }
