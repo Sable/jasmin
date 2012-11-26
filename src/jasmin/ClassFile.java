@@ -653,6 +653,7 @@ public class ClassFile {
 			    	for (int i = 0; i < bsmArgsList.length; i++) {
 			    		String sig = bsmArgsList[i].substring(1,bsmArgsList[i].indexOf(")"));
 			    		String val = bsmArgsList[i].substring(bsmArgsList[i].indexOf(")")+1);
+			    		val = unescape(val);
 			    		CP cp = null;
 			            if (sig.equals("I")||sig.equals("Z")||sig.equals("C")||sig.equals("B")||sig.equals("S")) {
 			                cp = new IntegerCP(Integer.parseInt(val));
@@ -689,7 +690,12 @@ public class ClassFile {
 		
 		}
 
-    //
+    //see soot.baf.JasminClass.emitInst(...).new InstSwitch() {...}.escape(String)
+    private String unescape(String val) {    	
+		return val.replace("\\comma",",").replace("\\blank"," ").replace("\\tab","\t").replace("\\newline","\n");
+	}
+
+	//
     // Lookupswitch instruction
     //
     void newLookupswitch() throws jasError {
