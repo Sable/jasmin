@@ -87,10 +87,10 @@ abstract class ReservedWords {
         
         
         // reserved_words used in Jasmin directives
+        reserved_words.put(".is", new Symbol(sym.IS));
         reserved_words.put("from", new Symbol(sym.FROM));
         reserved_words.put("method", new Symbol(sym.METHOD));
         reserved_words.put("to", new Symbol(sym.TO));
-        reserved_words.put("is", new Symbol(sym.IS));
         reserved_words.put("using", new Symbol(sym.USING));
 
         // Special-case instructions
