@@ -185,6 +185,14 @@ class_spec ::=
 classname ::=
     Word:w
         {: RESULT = ScannerUtils.convertDots(w); :}
+  | FROM         {: RESULT = "from"; :}
+  | TO           {: RESULT = "to"; :}
+  | USING        {: RESULT = "using"; :}
+  | IS           {: RESULT = "is"; :}
+  | METHOD       {: RESULT = "method"; :}
+  | LOOKUPSWITCH {: RESULT = "lookupswitch"; :}
+  | TABLESWITCH  {: RESULT = "tableswitch"; :}
+  | DEFAULT      {: RESULT = "default"; :}
 
   ;
 
