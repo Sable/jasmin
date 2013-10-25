@@ -104,7 +104,7 @@ terminal String Str, Word, Insn;
 terminal Integer Int;
 terminal Number Num;
 
-nonterminal String classname;
+nonterminal String Word_plus_keywords;
 nonterminal Object optional_default, item;
 nonterminal Object deprecated_attr, signature_attr;
 
@@ -168,13 +168,13 @@ source_spec ::=
 // ---- Class specification
 
 class_spec ::=
-    DCLASS access:a classname:name SEP
+    DCLASS access:a Word_plus_keywords:name SEP
         {:
             classFile.setClass(name,
                 (short)(a.intValue() | RuntimeConstants.ACC_SUPER));
         :}
     |
-    DINTERFACE access:a classname:name SEP
+    DINTERFACE access:a Word_plus_keywords:name SEP
         {:
             classFile.setClass(name,
                 (short)(a.intValue() |
@@ -182,7 +182,7 @@ class_spec ::=
         :}
   ;
 
-classname ::=
+Word_plus_keywords ::=
     Word:w
         {: RESULT = ScannerUtils.convertDots(w); :}
   | FROM         {: RESULT = "from"; :}
@@ -239,7 +239,7 @@ access_item ::=
 // ---- Superclass specification
 
 super_spec ::=
-    DSUPER classname:name SEP
+    DSUPER Word_plus_keywords:name SEP
         {:
             classFile.setSuperClass(name);
         :}
@@ -256,7 +256,7 @@ impls ::= implements_list | /* empty */ ;
 
 implements_list ::= implements_list implements_spec | implements_spec ;
 
-implements_spec ::= DIMPLEMENTS classname:name SEP
+implements_spec ::= DIMPLEMENTS Word_plus_keywords:name SEP
 	{: classFile.addInterface(name); :}
     ;
 
@@ -540,7 +540,7 @@ line_expr ::=
 
 // .throws <class>
 throws_expr ::=
-    classname:s
+    Word_plus_keywords:s
         {:
             classFile.addThrow(s);
         :}
@@ -548,7 +548,7 @@ throws_expr ::=
 
 // .catch <class> from <label1> to <label2> using <branchlab>
 catch_expr ::=
-    classname:aclass FROM Word:fromlab TO Word:tolab USING Word:branchlab
+    Word_plus_keywords:aclass FROM Word:fromlab TO Word:tolab USING Word:branchlab
         {:
             classFile.addCatch(aclass,
                             fromlab, tolab,
@@ -596,22 +596,22 @@ simple_instruction ::=
             classFile.plant(i, n);
         :}
     |
-    Insn:i Word:n
+    Insn:i Word_plus_keywords:n
         {:
             classFile.plant(i, n);
         :}
     |
-    Insn:i Word:n Int:n2
+    Insn:i Word_plus_keywords:n Int:n2
         {:
             classFile.plant(i, n, n2.intValue());
         :}
     |
-    Insn:i Word:n1 Word:n2
+    Insn:i Word_plus_keywords:n1 Word_plus_keywords:n2
         {:
             classFile.plant(i, n1, n2);
         :}
     |
-    Insn:i Str:n1 Word:n2 Word:n3
+    Insn:i Str:n1 Word_plus_keywords:n2 Word_plus_keywords:n3
         {:
             classFile.plant(i, n1, n2, n3);
         :}
