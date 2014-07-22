@@ -25,7 +25,7 @@ public class InvokeDynamicCP extends CP implements RuntimeConstants
   public InvokeDynamicCP(String bsmClassName, String bsmName, String bsmSig, String methodName, String methodSig, int bsmTableIndex)
   {
     this.bsmTableIndex = bsmTableIndex;
-	uniq = (bsmClassName + "fv0¤" + bsmName + "&%$91&" + bsmSig+ "*(012$" + methodName + "dfg8932" + methodSig).intern();
+	uniq = (bsmClassName + "fv0\u20ac" + bsmName + "&%$91&" + bsmSig+ "*(012$" + methodName + "dfg8932" + methodSig).intern();
     bsm = new MethodHandleCP(
     		MethodHandleCP.STATIC_METHOD_KIND, //bootstrap methods are always static methods 
     		bsmClassName, 

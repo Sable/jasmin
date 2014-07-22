@@ -24,7 +24,7 @@ public class MethodHandleCP extends CP implements RuntimeConstants
    */
   public MethodHandleCP(int kind, String ownerName, String fieldOrMethodName, String sig)
   {
-	uniq = kind + "$gfd¤" + ownerName + "&%$91&" + fieldOrMethodName + "*(012$" + sig;
+	uniq = kind + "$gfd\u20ac" + ownerName + "&%$91&" + fieldOrMethodName + "*(012$" + sig;
     if(kind<5) { //first for kinds refer to fields
     	fieldOrMethod = new FieldCP(ownerName, fieldOrMethodName, sig);
     } else {
