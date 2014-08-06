@@ -27,7 +27,7 @@
     <sequential>
       <javac destdir="classes"
              classpath="@{classpath}"
-             encoding="iso-8859-1"
+             encoding="${ant.build.javac.encoding}"
              debug="true"
              deprecation="true"
              optimize="true"
