@@ -5,14 +5,14 @@
  */
 
 package jas;
-import java.io.*;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 public class MethodHandleCP extends CP implements RuntimeConstants
 {
-	public final static int STATIC_METHOD_KIND = 6;
+  public final static int STATIC_METHOD_KIND = 6;
 
-	
   int kind;
   CP fieldOrMethod;
 
@@ -24,11 +24,11 @@ public class MethodHandleCP extends CP implements RuntimeConstants
    */
   public MethodHandleCP(int kind, String ownerName, String fieldOrMethodName, String sig)
   {
-	uniq = kind + "$gfd¤" + ownerName + "&%$91&" + fieldOrMethodName + "*(012$" + sig;
+    uniq = kind + "$gfd\u00A4" + ownerName + "&%$91&" + fieldOrMethodName + "*(012$" + sig;
     if(kind<5) { //first for kinds refer to fields
-    	fieldOrMethod = new FieldCP(ownerName, fieldOrMethodName, sig);
+      fieldOrMethod = new FieldCP(ownerName, fieldOrMethodName, sig);
     } else {
-    	fieldOrMethod = new MethodCP(ownerName, fieldOrMethodName, sig);
+      fieldOrMethod = new MethodCP(ownerName, fieldOrMethodName, sig);
     }
     this.kind = kind;
   }
