@@ -7,10 +7,20 @@ public interface RuntimeConstants {
 
     // top-level constants
     public static final int JAVA_MAGIC = -889275714;
-    public static final int JAVA_VERSION = 46;
-    public static final int JAVA_MINOR_VERSION = 0;
-    public static final int JAVA_HIGH_VERSION = 49;
-    public static final int JAVA_MINOR_HIGH_VERSION = 0;
+    //  J2SE 8   = 52 (0x34 hex),
+    //  J2SE 7   = 51 (0x33 hex),
+    //  J2SE 6.0 = 50 (0x32 hex),
+    //  J2SE 5.0 = 49 (0x31 hex),
+    //  JDK  1.4 = 48 (0x30 hex),
+    //  JDK  1.3 = 47 (0x2F hex),
+    //  JDK  1.2 = 46 (0x2E hex),
+    //  JDK  1.1 = 45 (0x2D hex).
+    public static final int JAVA1_2_VERSION = 46;
+    public static final int JAVA1_2_MINOR_VERSION = 0;
+    public static final int JAVA1_4_HIGH_VERSION = 48;
+    public static final int JAVA1_4_MINOR_HIGH_VERSION = 0;
+    public static final int JAVA5_HIGH_VERSION = 49;
+    public static final int JAVA5_MINOR_HIGH_VERSION = 0;
     public static final int JAVA6_HIGH_VERSION = 50;
     public static final int JAVA6_MINOR_HIGH_VERSION = 0;
     public static final int JAVA7_HIGH_VERSION = 51;
