@@ -967,6 +967,9 @@ public class ClassFile {
    
     void addMethSigAttr(String s){
         methSigAttr = s;
+        if (s.contains("<")) {
+            class_env.requireJava5();
+        }
     }
    
     void addEnclMethAttr(String cls, String meth, String sig){
