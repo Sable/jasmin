@@ -11,6 +11,8 @@ public interface RuntimeConstants {
     public static final int JAVA_MINOR_VERSION = 0;
     public static final int JAVA_HIGH_VERSION = 49;
     public static final int JAVA_MINOR_HIGH_VERSION = 0;
+    public static final int JAVA6_HIGH_VERSION = 50;
+    public static final int JAVA6_MINOR_HIGH_VERSION = 0;
     public static final int JAVA7_HIGH_VERSION = 51;
     public static final int JAVA7_MINOR_HIGH_VERSION = 0;
 

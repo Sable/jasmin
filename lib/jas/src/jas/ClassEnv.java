@@ -59,6 +59,11 @@ public class ClassEnv implements RuntimeConstants
     version_hi = (short) Math.max(version_hi,(short) JAVA_HIGH_VERSION);
   }
   
+  public void requireJava6(){
+    version_lo = (short) JAVA6_MINOR_HIGH_VERSION;
+    version_hi = (short) JAVA6_HIGH_VERSION;
+  }
+
   public void requireJava7(){
     version_lo = (short) JAVA7_MINOR_HIGH_VERSION;
     version_hi = (short) JAVA7_HIGH_VERSION;
