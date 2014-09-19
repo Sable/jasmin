@@ -294,15 +294,20 @@ public class ClassFile {
             }
 
             // add the field
-            if (synth == null){
-	    currentField = 
-            new Var(access, new AsciiCP(name),
-                               new AsciiCP(sig), new ConstAttr(cp));
-	        }
+            if (synth == null) {
+              currentField = new Var(
+                        access,
+                        new AsciiCP(name),
+                        new AsciiCP(sig),
+                        cp == null ? null : new ConstAttr(cp));
+            }
             else {
-	    currentField = 
-            new Var(access, new AsciiCP(name),
-                               new AsciiCP(sig), new ConstAttr(cp), new SyntheticAttr());
+                currentField = new Var(
+                        access,
+                        new AsciiCP(name),
+                        new AsciiCP(sig),
+                        cp == null ? null : new ConstAttr(cp),
+                        new SyntheticAttr());
             }
         if(dep_attr != null){
             currentField.addDeprecatedAttr(new DeprecatedAttr());
