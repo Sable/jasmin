@@ -198,7 +198,9 @@ class LdcOperand extends InsnOperand implements RuntimeConstants
   void resolve(ClassEnv e)
   { e.addCPItem(cpe);
       if (cpe instanceof ClassCP){
-        e.requireJava1_4();
+    	// If the constant is a Type (for .class constants), 
+    	// the class major version must be 49.0 (Java5) or more.
+        e.requireJava5();
       }
   }
 

@@ -42,8 +42,8 @@ public class ClassEnv implements RuntimeConstants
   {
                                 // Fill in reasonable defaults
     magic = JAVA_MAGIC;
-    version_lo = (short) JAVA_MINOR_VERSION;
-    version_hi = (short) JAVA_VERSION;
+    version_lo = (short) JAVA1_2_MINOR_VERSION;
+    version_hi = (short) JAVA1_2_VERSION;
                                 // Initialize bags
     cpe = new Hashtable();
     cpe_index = null;
@@ -54,14 +54,24 @@ public class ClassEnv implements RuntimeConstants
     bsm_attr = null;
   }
 
-  public void requireJava1_4(){
-    version_lo = (short) Math.max(version_lo,(short) JAVA_MINOR_HIGH_VERSION);
-    version_hi = (short) Math.max(version_hi,(short) JAVA_HIGH_VERSION);
+  public void requireJava1_4() {
+    version_lo = (short) Math.max(version_lo,(short) JAVA1_4_MINOR_HIGH_VERSION);
+    version_hi = (short) Math.max(version_hi,(short) JAVA1_4_HIGH_VERSION);
   }
-  
-  public void requireJava7(){
-    version_lo = (short) JAVA7_MINOR_HIGH_VERSION;
-    version_hi = (short) JAVA7_HIGH_VERSION;
+
+  public void requireJava5() {
+    version_lo = (short) Math.max(version_lo,(short) JAVA5_MINOR_HIGH_VERSION);
+    version_hi = (short) Math.max(version_hi,(short) JAVA5_HIGH_VERSION);
+  }
+
+  public void requireJava6() {
+    version_lo = (short) Math.max(version_lo, (short) JAVA6_MINOR_HIGH_VERSION);
+    version_hi = (short) Math.max(version_hi, (short) JAVA6_HIGH_VERSION);
+  }
+
+  public void requireJava7() {
+    version_lo = (short) Math.max(version_lo, (short) JAVA7_MINOR_HIGH_VERSION);
+    version_hi = (short) Math.max(version_hi, (short) JAVA7_HIGH_VERSION);
   }
   
   /**

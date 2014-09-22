@@ -202,7 +202,17 @@ public class ClassFile {
     
     void addClassSigAttr(Object res){
         if (res != null){
-            class_env.setClassSigAttr(new SignatureAttr((String)res));
+            String sig = (String)res;
+            class_env.setClassSigAttr(new SignatureAttr(sig));
+
+            // Templates were introduced in Java 5.
+            // http://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.3.4
+            // tells that "Signatures are used to encode Java programming language type
+            // information that is not part of the Java Virtual Machine type system, such
+            // as generic type"
+            if (sig.contains("<")) {
+                class_env.requireJava5();
+            }
         }
     }
     
@@ -958,6 +968,9 @@ public class ClassFile {
    
     void addMethSigAttr(String s){
         methSigAttr = s;
+        if (s.contains("<")) {
+            class_env.requireJava5();
+        }
     }
    
     void addEnclMethAttr(String cls, String meth, String sig){
