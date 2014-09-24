@@ -238,6 +238,9 @@ public class ClassFile {
     void addField(short access, String name,
                                 String sig, Object value, String synth, Object dep_attr, Object sig_attr, Object vis_annot_attr, Object vis_annot_attr2) {
 
+        if (sig.contains("<")) {
+            class_env.requireJava5();
+        }
 
         if (value == null) {
             // defining a field which doesn't have an initial value
@@ -246,6 +249,7 @@ public class ClassFile {
             }
             else {
                 currentField = new Var(access, new AsciiCP(name), new AsciiCP(sig), null, new SyntheticAttr());
+                class_env.requireJava6();
             }
         if(dep_attr != null){
             currentField.addDeprecatedAttr(new DeprecatedAttr());
@@ -308,6 +312,7 @@ public class ClassFile {
                         new AsciiCP(sig),
                         cp == null ? null : new ConstAttr(cp),
                         new SyntheticAttr());
+                class_env.requireJava6();
             }
         if(dep_attr != null){
             currentField.addDeprecatedAttr(new DeprecatedAttr());
@@ -374,6 +379,7 @@ public class ClassFile {
         else {
 	currentMethod  =  new Method(method_access, new AsciiCP(method_name),
 					    new AsciiCP(method_signature), code, except_attr, new SyntheticAttr());
+	class_env.requireJava6();
         }
 
         if (methDepr){
