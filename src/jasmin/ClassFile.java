@@ -238,7 +238,7 @@ public class ClassFile {
     void addField(short access, String name,
                                 String sig, Object value, String synth, Object dep_attr, Object sig_attr, Object vis_annot_attr, Object vis_annot_attr2) {
 
-        if (sig.contains("<")) {
+        if (sig.contains("<") || (sig_attr != null && ((String)sig_attr).contains("<"))) {
             class_env.requireJava5();
         }
 
