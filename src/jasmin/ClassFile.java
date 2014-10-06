@@ -289,7 +289,8 @@ public class ClassFile {
                 cp = new DoubleCP(((Number)value).doubleValue());
             } else if (sig.equals("J")) {
                 cp = new LongCP(((Number)value).longValue());
-            } else if (sig.equals("Ljava/lang/String;")) {
+            } else if (sig.equals("Ljava/lang/String;")
+            		|| (sig.equals("Ljava/lang/Object;") && value instanceof String)) {
                cp = new StringCP((String)value);
             }
 
