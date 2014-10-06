@@ -96,6 +96,7 @@ public class ClassFile {
 	if(currentMethod == null) 
 	    System.err.println("Error: no field in scope to add attribute onto.");
 	else {
+        class_env.requireJava6();
 	    class_env.addCPItem(new AsciiCP(name));
 	    currentMethod.addGenericAttr(new GenericAttr(name, value));
 	}
@@ -106,6 +107,7 @@ public class ClassFile {
 	if(currentField == null) 
 	    System.err.println("Error: no field in scope to add attribute onto.");
 	else {
+        class_env.requireJava6();
 	    class_env.addCPItem(new AsciiCP(name));
 	    currentField.addGenericAttr(new GenericAttr(name, value));
 	}
@@ -117,13 +119,14 @@ public class ClassFile {
         }
         else {
             //System.out.println("adding deprec to field" );
+            class_env.requireJava6();
             currentField.addDeprecatedAttr(new DeprecatedAttr());
         }
     }
 
-    public void addGenericAttrToClass(GenericAttr g)
-    {
-	class_env.addGenericAttr(g);
+    public void addGenericAttrToClass(GenericAttr g) {
+        class_env.requireJava6();
+        class_env.addGenericAttr(g);
     }
 
     static final String BGN_METHOD = "bgnmethod:";
@@ -196,6 +199,7 @@ public class ClassFile {
 
     void addClassDeprAttr(Object res){
         if (res != null){
+            class_env.requireJava5();
             class_env.setClassDepr(new DeprecatedAttr());
         }
     }
@@ -218,12 +222,14 @@ public class ClassFile {
     
     void addClassAnnotAttrVisible(Object res){
         if (res != null){
+            class_env.requireJava5();
             class_env.setClassAnnotAttrVis((VisibilityAnnotationAttr)res);
         }
     }
     
     void addClassAnnotAttrInvisible(Object res){
         if (res != null){
+            class_env.requireJava5();
             class_env.setClassAnnotAttrInvis((VisibilityAnnotationAttr)res);
         }
     }
@@ -238,6 +244,9 @@ public class ClassFile {
     void addField(short access, String name,
                                 String sig, Object value, String synth, Object dep_attr, Object sig_attr, Object vis_annot_attr, Object vis_annot_attr2) {
 
+        if (sig.contains("<") || (sig_attr != null && ((String)sig_attr).contains("<"))) {
+            class_env.requireJava5();
+        }
 
         if (value == null) {
             // defining a field which doesn't have an initial value
@@ -246,14 +255,17 @@ public class ClassFile {
             }
             else {
                 currentField = new Var(access, new AsciiCP(name), new AsciiCP(sig), null, new SyntheticAttr());
+                class_env.requireJava6();
             }
         if(dep_attr != null){
+            class_env.requireJava5();
             currentField.addDeprecatedAttr(new DeprecatedAttr());
         }
         if(sig_attr != null){
             currentField.addSignatureAttr(new SignatureAttr((String)sig_attr));
         }
         if (vis_annot_attr != null){
+            class_env.requireJava5();
             VisibilityAnnotationAttr attribute = (VisibilityAnnotationAttr)vis_annot_attr;
             if(attribute.getKind().equals("RuntimeVisible"))
             	currentField.addVisibilityAnnotationAttrVis(attribute);
@@ -261,6 +273,7 @@ public class ClassFile {
             	currentField.addVisibilityAnnotationAttrInvis(attribute);
         }
         if (vis_annot_attr2 != null){
+            class_env.requireJava5();
             VisibilityAnnotationAttr attribute = (VisibilityAnnotationAttr)vis_annot_attr2;
             if(attribute.getKind().equals("RuntimeVisible"))
             	currentField.addVisibilityAnnotationAttrVis(attribute);
@@ -309,8 +322,10 @@ public class ClassFile {
                         new AsciiCP(sig),
                         cp == null ? null : new ConstAttr(cp),
                         new SyntheticAttr());
+                class_env.requireJava6();
             }
         if(dep_attr != null){
+            class_env.requireJava5();
             currentField.addDeprecatedAttr(new DeprecatedAttr());
         }
         if(sig_attr != null){
@@ -375,27 +390,34 @@ public class ClassFile {
         else {
 	currentMethod  =  new Method(method_access, new AsciiCP(method_name),
 					    new AsciiCP(method_signature), code, except_attr, new SyntheticAttr());
+	class_env.requireJava6();
         }
 
         if (methDepr){
+            class_env.requireJava5();
             currentMethod.addDeprecatedAttr(new DeprecatedAttr());
         }
         if (methSigAttr != null){ 
             currentMethod.addSignatureAttr(new SignatureAttr(methSigAttr));
         }
         if (methAnnotAttrVis != null){ 
+            class_env.requireJava5();
             currentMethod.addVisAnnotationAttr(methAnnotAttrVis);
         }
         if (methAnnotAttrInvis != null){ 
+            class_env.requireJava5();
             currentMethod.addInvisAnnotationAttr(methAnnotAttrInvis);
         }
         if (methParamAnnotAttrVis != null){ 
+            class_env.requireJava5();
             currentMethod.addVisParamAnnotationAttr(methParamAnnotAttrVis);
         }
         if (methParamAnnotAttrInvis != null){ 
+            class_env.requireJava5();
             currentMethod.addInvisParamAnnotationAttr(methParamAnnotAttrInvis);
         }
         if (methAnnotDef != null){ 
+            class_env.requireJava5();
             methAnnotDef.setNoName();
             currentMethod.addAnnotationDef(new AnnotationDefaultAttr(methAnnotDef));
         }
