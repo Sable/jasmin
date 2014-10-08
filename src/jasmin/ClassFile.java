@@ -302,10 +302,21 @@ public class ClassFile {
                 cp = new DoubleCP(((Number)value).doubleValue());
             } else if (sig.equals("J")) {
                 cp = new LongCP(((Number)value).longValue());
-            } else if (sig.equals("Ljava/lang/String;")
-            		|| (sig.equals("Ljava/lang/Object;") && value instanceof String)) {
+            } else if (sig.equals("Ljava/lang/String;")) {
                cp = new StringCP((String)value);
             }
+            // ******************************************
+            // *** README: Do not add the following code:
+            // ******************************************
+            //
+            // else if ((sig.equals("Ljava/lang/Object;") && value instanceof String)) {
+            //   cp = new StringCP((String)value);
+            // }
+            //
+            // See commit 1def25a42bf162766f7fe2ff8824643f79e43289
+            // "No initial value for fields with type other than a primitive type or java.lang.String"
+            //
+
 
             // add the field
             if (synth == null) {
