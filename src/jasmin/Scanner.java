@@ -21,6 +21,7 @@ package jasmin;
 
 import jas.*;
 import java_cup.runtime.*;
+
 import java.util.*;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -150,86 +151,6 @@ class Scanner implements java_cup.runtime.Scanner {
 				token_line_num = line_num;
 				return new Symbol(sym.SEP);
 
-			case '0':
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			case '8':
-			case '9':
-			case '-':
-			case '+':
-			case '.': // a number
-			{
-				int pos = 0;
-
-				// record that we have found first item
-				is_first_sep = false;
-
-				chars[0] = (char) next_char;
-				pos++;
-				for (;;) {
-					advance();
-					if (separator(next_char)) {
-						break;
-					}
-					try {
-						chars[pos] = (char) next_char;
-					} catch (ArrayIndexOutOfBoundsException abe) {
-						char[] tmparray = new char[chars.length * 2];
-						System.arraycopy(chars, 0, tmparray, 0, chars.length);
-						chars = tmparray;
-						chars[pos] = (char) next_char;
-					}
-					pos++;
-				}
-				String str = new String(chars, 0, pos);
-				Symbol tok;
-
-				if (str.equals("+DoubleInfinity"))
-					return new Symbol(sym.Num, new Double(1.0 / 0.0));
-
-				if (str.equals("+DoubleNaN"))
-					return new Symbol(sym.Num, new Double(0.0d / 0.0));
-
-				if (str.equals("+FloatNaN"))
-					return new Symbol(sym.Num, new Float(0.0f / 0.0));
-
-				if (str.equals("-DoubleInfinity"))
-					return new Symbol(sym.Num, new Double(-1.0 / 0.0));
-
-				if (str.equals("+FloatInfinity"))
-					return new Symbol(sym.Num, new Float(1.0f / 0.0f));
-
-				if (str.equals("-FloatInfinity"))
-					return new Symbol(sym.Num, new Float(-1.0f / 0.0f));
-
-				// This catches directives like ".method"
-				if ((tok = ReservedWords.get(str)) != null) {
-					return tok;
-				}
-
-				Number num;
-				try {
-					num = ScannerUtils.convertNumber(str);
-				} catch (NumberFormatException e) {
-					if (chars[0] == '.') {
-						throw new jasError("Unknown directive or badly formed number.");
-					} else {
-						throw new jasError("Badly formatted number");
-					}
-				}
-
-				if (num instanceof Integer) {
-					return new Symbol(sym.Int, new Integer(num.intValue()));
-				} else {
-					return new Symbol(sym.Num, num);
-				}
-			}
-
 			case '"': // quoted strings
 			{
 				int pos = 0;
@@ -342,11 +263,22 @@ class Scanner implements java_cup.runtime.Scanner {
 				line.setLength(0);
 				return new Symbol(sym.EOF);
 
+			case '0':
+			case '1':
+			case '2':
+			case '3':
+			case '4':
+			case '5':
+			case '6':
+			case '7':
+			case '8':
+			case '9':
+			case '-':
+			case '+':
+			case '.': // a number
 			default: {
 				// read up until a separatorcharacter
-
 				int pos = 0;
-				int secondPos = 0;
 				chars[0] = (char) next_char;
 				is_first_sep = false;
 
@@ -367,41 +299,15 @@ class Scanner implements java_cup.runtime.Scanner {
 					pos++;
 				}
 
-				secondPos = 0;
-
-				// Parse all the unicode escape sequences
-				for (int i = 0; i < pos; i++) {
-					if (chars[i] == '\\' && (i + 5) < pos && chars[i + 1] == 'u') {
-						int intValue = Integer.parseInt(new String(chars, i + 2, 4), 16);
-
-						try {
-							secondChars[secondPos] = (char) intValue;
-						} catch (ArrayIndexOutOfBoundsException abe) {
-							char[] tmparray = new char[secondChars.length * 2];
-							System.arraycopy(secondChars, 0, tmparray, 0, secondChars.length);
-							secondChars = tmparray;
-							secondChars[secondPos] = (char) intValue;
-						}
-						secondPos++;
-
-						i += 5;
-					} else {
-						try {
-							secondChars[secondPos] = chars[i];
-						} catch (ArrayIndexOutOfBoundsException abe) {
-							char[] tmparray = new char[secondChars.length * 2];
-							System.arraycopy(secondChars, 0, tmparray, 0, secondChars.length);
-							secondChars = tmparray;
-							secondChars[secondPos] = chars[i];
-						}
-						secondPos++;
-					}
-				}
-
 				// convert the byte array into a String
+				int secondPos = translateUnicodeCharacters(pos);
 				String str = new String(secondChars, 0, secondPos);
-
+				
+				// Is this a number?
 				Symbol tok;
+				if ((tok = tryParseAsNumber(str)) != null)
+					return tok;
+				
 				if ((tok = ReservedWords.get(str)) != null) {
 					// Jasmin keyword or directive
 					return tok;
@@ -420,6 +326,104 @@ class Scanner implements java_cup.runtime.Scanner {
 			} /* default */
 			} /* switch */
 		} /* for */
+	}
+
+	private Symbol tryParseAsNumber(String str) throws jasError {
+		if (str.isEmpty())
+			return null;
+		
+		// Check for special numbers
+		if (str.equals("+DoubleInfinity"))
+			return new Symbol(sym.Num, new Double(1.0 / 0.0));
+		if (str.equals("+DoubleNaN"))
+			return new Symbol(sym.Num, new Double(0.0d / 0.0));
+		if (str.equals("+FloatNaN"))
+			return new Symbol(sym.Num, new Float(0.0f / 0.0));
+		if (str.equals("-DoubleInfinity"))
+			return new Symbol(sym.Num, new Double(-1.0 / 0.0));
+		if (str.equals("+FloatInfinity"))
+			return new Symbol(sym.Num, new Float(1.0f / 0.0f));
+		if (str.equals("-FloatInfinity"))
+			return new Symbol(sym.Num, new Float(-1.0f / 0.0f));
+		
+		// This catches directives like ".method"
+		Symbol tok;
+		if ((tok = ReservedWords.get(str)) != null) {
+			return tok;
+		}
+		
+		// Is this a method signature?
+		int idxOpen = str.indexOf("(");
+		int idxClose = str.indexOf(")");
+		if (idxOpen > 0 && idxClose > idxOpen)
+			return null;
+		
+		// Parse regular numbers
+		char c = str.charAt(0);
+		if (c == '0'
+				|| c == '1'
+				|| c == '2'
+				|| c == '3'
+				|| c == '4'
+				|| c == '5'
+				|| c == '6'
+				|| c == '7'
+				|| c == '8'
+				|| c == '9'
+				|| c == '-'
+				|| c == '+'
+				|| c == '.') {
+			Number num;
+			try {
+				num = ScannerUtils.convertNumber(str);
+			} catch (NumberFormatException e) {
+				if (chars[0] == '.') {
+					throw new jasError("Unknown directive or badly formed number.");
+				} else {
+					throw new jasError("Badly formatted number");
+				}
+			}
+			
+			if (num instanceof Integer) {
+				return new Symbol(sym.Int, new Integer(num.intValue()));
+			} else {
+				return new Symbol(sym.Num, num);
+			}
+		}
+		return null;
+	}
+
+	private int translateUnicodeCharacters(int pos) {
+		// Parse all the unicode escape sequences
+		int secondPos = 0;
+		for (int i = 0; i < pos; i++) {
+			if (chars[i] == '\\' && (i + 5) < pos && chars[i + 1] == 'u') {
+				int intValue = Integer.parseInt(new String(chars, i + 2, 4), 16);
+
+				try {
+					secondChars[secondPos] = (char) intValue;
+				} catch (ArrayIndexOutOfBoundsException abe) {
+					char[] tmparray = new char[secondChars.length * 2];
+					System.arraycopy(secondChars, 0, tmparray, 0, secondChars.length);
+					secondChars = tmparray;
+					secondChars[secondPos] = (char) intValue;
+				}
+				secondPos++;
+
+				i += 5;
+			} else {
+				try {
+					secondChars[secondPos] = chars[i];
+				} catch (ArrayIndexOutOfBoundsException abe) {
+					char[] tmparray = new char[secondChars.length * 2];
+					System.arraycopy(secondChars, 0, tmparray, 0, secondChars.length);
+					secondChars = tmparray;
+					secondChars[secondPos] = chars[i];
+				}
+				secondPos++;
+			}
+		}
+		return secondPos;
 	}
 
 };
