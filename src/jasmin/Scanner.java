@@ -19,12 +19,12 @@
 
 package jasmin;
 
-import jas.jasError;
+import jas.*;
+import java_cup.runtime.*;
 
+import java.util.*;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
-import java_cup.runtime.Symbol;
 
 class Scanner implements java_cup.runtime.Scanner {
 	InputStreamReader inp;
@@ -53,7 +53,10 @@ class Scanner implements java_cup.runtime.Scanner {
 	// used for error reporting to print out where an error is on the line
 	public int line_num, char_num, token_line_num;
 	public StringBuffer line;
-	
+
+	// used by the .set directive to define new variables.
+	public Hashtable<String, Object> dict = new Hashtable<String, Object>();
+
 	//
 	// returns true if a character code is a whitespace character
 	//
