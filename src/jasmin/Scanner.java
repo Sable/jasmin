@@ -19,12 +19,12 @@
 
 package jasmin;
 
-import jas.*;
-import java_cup.runtime.*;
+import jas.jasError;
 
-import java.util.*;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
+import java_cup.runtime.Symbol;
 
 class Scanner implements java_cup.runtime.Scanner {
 	InputStreamReader inp;
@@ -53,10 +53,7 @@ class Scanner implements java_cup.runtime.Scanner {
 	// used for error reporting to print out where an error is on the line
 	public int line_num, char_num, token_line_num;
 	public StringBuffer line;
-
-	// used by the .set directive to define new variables.
-	public Hashtable dict = new Hashtable();
-
+	
 	//
 	// returns true if a character code is a whitespace character
 	//
@@ -380,7 +377,7 @@ class Scanner implements java_cup.runtime.Scanner {
 				if (chars[0] == '.') {
 					throw new jasError("Unknown directive or badly formed number.");
 				} else {
-					throw new jasError("Badly formatted number");
+					throw new jasError("Badly formatted number: " + str);
 				}
 			}
 			
