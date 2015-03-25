@@ -25,7 +25,7 @@ public class ClassEnv implements RuntimeConstants
   Vector interfaces;
   Vector vars;
   Vector methods;
-  SourceAttr source;
+  SourceAttr source = null;
   Vector generic;
   boolean hasSuperClass;
   InnerClassAttr inner_class_attr;
@@ -404,8 +404,14 @@ public class ClassEnv implements RuntimeConstants
    * for the clas.
    * @param source String with the name of the class
    */
-  public void setSource(String source)
-  { this.source = new SourceAttr(source); this.source.resolve(this); }
+  public void setSource(String source) {
+	  if (source == null)
+		  this.source = null;
+	  else {
+		  this.source = new SourceAttr(source);
+		  this.source.resolve(this);
+	  }
+  }
 
   /**
    * Add a generic attribute to the class file. A generic attribute

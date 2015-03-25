@@ -1196,8 +1196,7 @@ public class ClassFile {
         // initialize variables for error reporting
         errors = 0;
         filename = name;
-	source_name = name;
-
+        
         // if numberLines is true, we output LineTableAttr's that indicate what line
         // numbers the Jasmin code falls on.
         auto_number = numberLines;
