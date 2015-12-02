@@ -2,6 +2,8 @@
 <project default="compile">
   <property file="ant.settings" />
 
+  <property name="tables.dir" value="tables.out" />
+
   <path id="jas.src">
     <pathelement location="lib/jas/src/jas" />
   </path>
@@ -45,6 +47,11 @@
 
   <target name="compile" depends="settings, scm">
     <java-compile source="compile.src" classpath="classes:${java_cup.jar}" />
+    <mkdir dir="classes/${tables.dir}/" />
+    <copy todir="classes/${tables.dir}/">  
+      <fileset dir="src/${tables.dir}/" includes="**"/>  
+    </copy>
+
   </target>
 
   <target name="build_parser">
@@ -53,6 +60,10 @@
     </java>
     <move file="parser.java" tofile="src/jasmin/parser.java" />
     <move file="sym.java" tofile="src/jasmin/sym.java" />
+    <mkdir dir="src/${tables.dir}/" />
+    <move todir="src/${tables.dir}/">
+      <fileset dir="${tables.dir}/"/>
+    </move>
   </target>
 
   <target name="scm" depends="autogen_run">
@@ -95,7 +106,6 @@
       <attribute name="Main-Class" value="jasmin.Main" />
       <attribute name="Implementation-Version" value="${jasmin.version}" />
     </manifest>
-
     <jar destfile="${release.loc}/jasminclasses-${jasmin.version}.jar" manifest="META-INF/MANIFEST.MF">
       <fileset dir="classes" />
     </jar>

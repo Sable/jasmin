@@ -7,7 +7,8 @@
 package jasmin;
 
 import java.util.Hashtable;
-import java_cup.runtime.*;
+
+import java_cup.runtime.Symbol;
 
 abstract class ReservedWords {
     static Hashtable reserved_words;

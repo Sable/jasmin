@@ -96,14 +96,37 @@ terminal token
     LOOKUPSWITCH, TABLESWITCH, DEFAULT,
 
     // special symbols
-    EQ, SEP, COLON
+    EQ, SEP, COLON,
+    
+    // instructions
+    i_aaload, i_aastore, i_aconst_null, i_aload, i_aload_0, i_aload_1, i_aload_2, i_aload_3, i_anewarray, i_areturn, 
+    i_arraylength, i_astore, i_astore_0, i_astore_1, i_astore_2, i_astore_3, i_athrow, i_baload, i_bastore, i_bipush, 
+    i_breakpoint, i_caload, i_castore, i_checkcast, i_d2f, i_d2i, i_d2l, i_dadd, i_daload, i_dastore, i_dcmpg, i_dcmpl, 
+    i_dconst_0, i_dconst_1, i_ddiv, i_dload, i_dload_0, i_dload_1, i_dload_2, i_dload_3, i_dmul, i_dneg, i_drem, i_dreturn, 
+    i_dstore, i_dstore_0, i_dstore_1, i_dstore_2, i_dstore_3, i_dsub, i_dup, i_dup2, i_dup2_x1, i_dup2_x2, i_dup_x1, 
+    i_dup_x2, i_f2d, i_f2i, i_f2l, i_fadd, i_faload, i_fastore, i_fcmpg, i_fcmpl, i_fconst_0, i_fconst_1, i_fconst_2, 
+    i_fdiv, i_fload, i_fload_0, i_fload_1, i_fload_2, i_fload_3, i_fmul, i_fneg, i_frem, i_freturn, i_fstore, i_fstore_0, 
+    i_fstore_1, i_fstore_2, i_fstore_3, i_fsub, i_getfield, i_getstatic, i_goto, i_goto_w, i_i2d, i_i2f, i_i2l, i_iadd, 
+    i_iaload, i_iand, i_iastore, i_iconst_0, i_iconst_1, i_iconst_2, i_iconst_3, i_iconst_4, i_iconst_5, i_iconst_m1, 
+    i_idiv, i_if_acmpeq, i_if_acmpne, i_if_icmpeq, i_if_icmpge, i_if_icmpgt, i_if_icmple, i_if_icmplt, i_if_icmpne, 
+    i_ifeq, i_ifge, i_ifgt, i_ifle, i_iflt, i_ifne, i_ifnonnull, i_ifnull, i_iinc, i_iload, i_iload_0, i_iload_1, 
+    i_iload_2, i_iload_3, i_imul, i_ineg, i_instanceof, i_int2byte, i_int2char, i_int2short, i_i2b, i_i2c, i_i2s, 
+    i_invokeinterface, i_invokenonvirtual, i_invokespecial, i_invokestatic, i_invokevirtual, i_invokedynamic, i_ior, 
+    i_irem, i_ireturn, i_ishl, i_ishr, i_istore, i_istore_0, i_istore_1, i_istore_2, i_istore_3, i_isub, i_iushr, i_ixor, 
+    i_jsr, i_jsr_w, i_l2d, i_l2f, i_l2i, i_ladd, i_laload, i_land, i_lastore, i_lcmp, i_lconst_0, i_lconst_1, i_ldc, 
+    i_ldc_w, i_ldc2_w, i_ldiv, i_lload, i_lload_0, i_lload_1, i_lload_2, i_lload_3, i_lmul, i_lneg, i_lookupswitch, 
+    i_lor, i_lrem, i_lreturn, i_lshl, i_lshr, i_lstore, i_lstore_0, i_lstore_1, i_lstore_2, i_lstore_3, i_lsub, i_lushr, 
+    i_lxor, i_monitorenter, i_monitorexit, i_multianewarray, i_new, i_newarray, i_nop, i_pop, i_pop2, i_putfield, 
+    i_putstatic, i_ret, i_ret_w, i_return, i_saload, i_sastore, i_sipush, i_swap, i_tableswitch, i_wide
+    
     
  ;
 
-terminal String Str, Word, Insn;
+terminal String Str, Word;
 terminal Integer Int;
 terminal Number Num;
 
+nonterminal String Insn;
 nonterminal String Word_plus_keywords;
 nonterminal Object optional_default, item;
 nonterminal Object deprecated_attr, signature_attr;
@@ -183,8 +206,7 @@ class_spec ::=
   ;
 
 Word_plus_keywords ::=
-    Word:w
-        {: RESULT = ScannerUtils.convertDots(w); :}
+    Word:w       {: RESULT = ScannerUtils.convertDots(w); :}
   | FROM         {: RESULT = "from"; :}
   | TO           {: RESULT = "to"; :}
   | USING        {: RESULT = "using"; :}
@@ -193,8 +215,220 @@ Word_plus_keywords ::=
   | LOOKUPSWITCH {: RESULT = "lookupswitch"; :}
   | TABLESWITCH  {: RESULT = "tableswitch"; :}
   | DEFAULT      {: RESULT = "default"; :}
-
+  | Insn:i       {: RESULT = i; :} 
   ;
+
+// Don't wanna live in another world. That's the way it was meant to be.
+Insn ::=
+  i_aaload {: RESULT = "aaload" :}
+| i_aastore {: RESULT = "aastore" :}
+| i_aconst_null {: RESULT = "aconst_null" :}
+| i_aload {: RESULT = "aload" :}
+| i_aload_0 {: RESULT = "aload_0" :}
+| i_aload_1 {: RESULT = "aload_1" :}
+| i_aload_2 {: RESULT = "aload_2" :}
+| i_aload_3 {: RESULT = "aload_3" :}
+| i_anewarray {: RESULT = "anewarray" :}
+| i_areturn {: RESULT = "areturn" :}
+| i_arraylength {: RESULT = "arraylength" :}
+| i_astore {: RESULT = "astore" :}
+| i_astore_0 {: RESULT = "astore_0" :}
+| i_astore_1 {: RESULT = "astore_1" :}
+| i_astore_2 {: RESULT = "astore_2" :}
+| i_astore_3 {: RESULT = "astore_3" :}
+| i_athrow {: RESULT = "athrow" :}
+| i_baload {: RESULT = "baload" :}
+| i_bastore {: RESULT = "bastore" :}
+| i_bipush {: RESULT = "bipush" :}
+| i_breakpoint {: RESULT = "breakpoint" :}
+| i_caload {: RESULT = "caload" :}
+| i_castore {: RESULT = "castore" :}
+| i_checkcast {: RESULT = "checkcast" :}
+| i_d2f {: RESULT = "d2f" :}
+| i_d2i {: RESULT = "d2i" :}
+| i_d2l {: RESULT = "d2l" :}
+| i_dadd {: RESULT = "dadd" :}
+| i_daload {: RESULT = "daload" :}
+| i_dastore {: RESULT = "dastore" :}
+| i_dcmpg {: RESULT = "dcmpg" :}
+| i_dcmpl {: RESULT = "dcmpl" :}
+| i_dconst_0 {: RESULT = "dconst_0" :}
+| i_dconst_1 {: RESULT = "dconst_1" :}
+| i_ddiv {: RESULT = "ddiv" :}
+| i_dload {: RESULT = "dload" :}
+| i_dload_0 {: RESULT = "dload_0" :}
+| i_dload_1 {: RESULT = "dload_1" :}
+| i_dload_2 {: RESULT = "dload_2" :}
+| i_dload_3 {: RESULT = "dload_3" :}
+| i_dmul {: RESULT = "dmul" :}
+| i_dneg {: RESULT = "dneg" :}
+| i_drem {: RESULT = "drem" :}
+| i_dreturn {: RESULT = "dreturn" :}
+| i_dstore {: RESULT = "dstore" :}
+| i_dstore_0 {: RESULT = "dstore_0" :}
+| i_dstore_1 {: RESULT = "dstore_1" :}
+| i_dstore_2 {: RESULT = "dstore_2" :}
+| i_dstore_3 {: RESULT = "dstore_3" :}
+| i_dsub {: RESULT = "dsub" :}
+| i_dup {: RESULT = "dup" :}
+| i_dup2 {: RESULT = "dup2" :}
+| i_dup2_x1 {: RESULT = "dup2_x1" :}
+| i_dup2_x2 {: RESULT = "dup2_x2" :}
+| i_dup_x1 {: RESULT = "dup_x1" :}
+| i_dup_x2 {: RESULT = "dup_x2" :}
+| i_f2d {: RESULT = "f2d" :}
+| i_f2i {: RESULT = "f2i" :}
+| i_f2l {: RESULT = "f2l" :}
+| i_fadd {: RESULT = "fadd" :}
+| i_faload {: RESULT = "faload" :}
+| i_fastore {: RESULT = "fastore" :}
+| i_fcmpg {: RESULT = "fcmpg" :}
+| i_fcmpl {: RESULT = "fcmpl" :}
+| i_fconst_0 {: RESULT = "fconst_0" :}
+| i_fconst_1 {: RESULT = "fconst_1" :}
+| i_fconst_2 {: RESULT = "fconst_2" :}
+| i_fdiv {: RESULT = "fdiv" :}
+| i_fload {: RESULT = "fload" :}
+| i_fload_0 {: RESULT = "fload_0" :}
+| i_fload_1 {: RESULT = "fload_1" :}
+| i_fload_2 {: RESULT = "fload_2" :}
+| i_fload_3 {: RESULT = "fload_3" :}
+| i_fmul {: RESULT = "fmul" :}
+| i_fneg {: RESULT = "fneg" :}
+| i_frem {: RESULT = "frem" :}
+| i_freturn {: RESULT = "freturn" :}
+| i_fstore {: RESULT = "fstore" :}
+| i_fstore_0 {: RESULT = "fstore_0" :}
+| i_fstore_1 {: RESULT = "fstore_1" :}
+| i_fstore_2 {: RESULT = "fstore_2" :}
+| i_fstore_3 {: RESULT = "fstore_3" :}
+| i_fsub {: RESULT = "fsub" :}
+| i_getfield {: RESULT = "getfield" :}
+| i_getstatic {: RESULT = "getstatic" :}
+| i_goto {: RESULT = "goto" :}
+| i_goto_w {: RESULT = "goto_w" :}
+| i_i2d {: RESULT = "i2d" :}
+| i_i2f {: RESULT = "i2f" :}
+| i_i2l {: RESULT = "i2l" :}
+| i_iadd {: RESULT = "iadd" :}
+| i_iaload {: RESULT = "iaload" :}
+| i_iand {: RESULT = "iand" :}
+| i_iastore {: RESULT = "iastore" :}
+| i_iconst_0 {: RESULT = "iconst_0" :}
+| i_iconst_1 {: RESULT = "iconst_1" :}
+| i_iconst_2 {: RESULT = "iconst_2" :}
+| i_iconst_3 {: RESULT = "iconst_3" :}
+| i_iconst_4 {: RESULT = "iconst_4" :}
+| i_iconst_5 {: RESULT = "iconst_5" :}
+| i_iconst_m1 {: RESULT = "iconst_m1" :}
+| i_idiv {: RESULT = "idiv" :}
+| i_if_acmpeq {: RESULT = "if_acmpeq" :}
+| i_if_acmpne {: RESULT = "if_acmpne" :}
+| i_if_icmpeq {: RESULT = "if_icmpeq" :}
+| i_if_icmpge {: RESULT = "if_icmpge" :}
+| i_if_icmpgt {: RESULT = "if_icmpgt" :}
+| i_if_icmple {: RESULT = "if_icmple" :}
+| i_if_icmplt {: RESULT = "if_icmplt" :}
+| i_if_icmpne {: RESULT = "if_icmpne" :}
+| i_ifeq {: RESULT = "ifeq" :}
+| i_ifge {: RESULT = "ifge" :}
+| i_ifgt {: RESULT = "ifgt" :}
+| i_ifle {: RESULT = "ifle" :}
+| i_iflt {: RESULT = "iflt" :}
+| i_ifne {: RESULT = "ifne" :}
+| i_ifnonnull {: RESULT = "ifnonnull" :}
+| i_ifnull {: RESULT = "ifnull" :}
+| i_iinc {: RESULT = "iinc" :}
+| i_iload {: RESULT = "iload" :}
+| i_iload_0 {: RESULT = "iload_0" :}
+| i_iload_1 {: RESULT = "iload_1" :}
+| i_iload_2 {: RESULT = "iload_2" :}
+| i_iload_3 {: RESULT = "iload_3" :}
+| i_imul {: RESULT = "imul" :}
+| i_ineg {: RESULT = "ineg" :}
+| i_instanceof {: RESULT = "instanceof" :}
+| i_int2byte {: RESULT = "int2byte" :}
+| i_int2char {: RESULT = "int2char" :}
+| i_int2short {: RESULT = "int2short" :}
+| i_i2b {: RESULT = "i2b" :}
+| i_i2c {: RESULT = "i2c" :}
+| i_i2s {: RESULT = "i2s" :}
+| i_invokeinterface {: RESULT = "invokeinterface" :}
+| i_invokenonvirtual {: RESULT = "invokenonvirtual" :}
+| i_invokespecial {: RESULT = "invokespecial" :}
+| i_invokestatic {: RESULT = "invokestatic" :}
+| i_invokevirtual {: RESULT = "invokevirtual" :}
+| i_invokedynamic {: RESULT = "invokedynamic" :}
+| i_ior {: RESULT = "ior" :}
+| i_irem {: RESULT = "irem" :}
+| i_ireturn {: RESULT = "ireturn" :}
+| i_ishl {: RESULT = "ishl" :}
+| i_ishr {: RESULT = "ishr" :}
+| i_istore {: RESULT = "istore" :}
+| i_istore_0 {: RESULT = "istore_0" :}
+| i_istore_1 {: RESULT = "istore_1" :}
+| i_istore_2 {: RESULT = "istore_2" :}
+| i_istore_3 {: RESULT = "istore_3" :}
+| i_isub {: RESULT = "isub" :}
+| i_iushr {: RESULT = "iushr" :}
+| i_ixor {: RESULT = "ixor" :}
+| i_jsr {: RESULT = "jsr" :}
+| i_jsr_w {: RESULT = "jsr_w" :}
+| i_l2d {: RESULT = "l2d" :}
+| i_l2f {: RESULT = "l2f" :}
+| i_l2i {: RESULT = "l2i" :}
+| i_ladd {: RESULT = "ladd" :}
+| i_laload {: RESULT = "laload" :}
+| i_land {: RESULT = "land" :}
+| i_lastore {: RESULT = "lastore" :}
+| i_lcmp {: RESULT = "lcmp" :}
+| i_lconst_0 {: RESULT = "lconst_0" :}
+| i_lconst_1 {: RESULT = "lconst_1" :}
+| i_ldc {: RESULT = "ldc" :}
+| i_ldc_w {: RESULT = "ldc_w" :}
+| i_ldc2_w {: RESULT = "ldc2_w" :}
+| i_ldiv {: RESULT = "ldiv" :}
+| i_lload {: RESULT = "lload" :}
+| i_lload_0 {: RESULT = "lload_0" :}
+| i_lload_1 {: RESULT = "lload_1" :}
+| i_lload_2 {: RESULT = "lload_2" :}
+| i_lload_3 {: RESULT = "lload_3" :}
+| i_lmul {: RESULT = "lmul" :}
+| i_lneg {: RESULT = "lneg" :}
+| i_lookupswitch {: RESULT = "lookupswitch" :}
+| i_lor {: RESULT = "lor" :}
+| i_lrem {: RESULT = "lrem" :}
+| i_lreturn {: RESULT = "lreturn" :}
+| i_lshl {: RESULT = "lshl" :}
+| i_lshr {: RESULT = "lshr" :}
+| i_lstore {: RESULT = "lstore" :}
+| i_lstore_0 {: RESULT = "lstore_0" :}
+| i_lstore_1 {: RESULT = "lstore_1" :}
+| i_lstore_2 {: RESULT = "lstore_2" :}
+| i_lstore_3 {: RESULT = "lstore_3" :}
+| i_lsub {: RESULT = "lsub" :}
+| i_lushr {: RESULT = "lushr" :}
+| i_lxor {: RESULT = "lxor" :}
+| i_monitorenter {: RESULT = "monitorenter" :}
+| i_monitorexit {: RESULT = "monitorexit" :}
+| i_multianewarray {: RESULT = "multianewarray" :}
+| i_new {: RESULT = "new" :}
+| i_newarray {: RESULT = "newarray" :}
+| i_nop {: RESULT = "nop" :}
+| i_pop {: RESULT = "pop" :}
+| i_pop2 {: RESULT = "pop2" :}
+| i_putfield {: RESULT = "putfield" :}
+| i_putstatic {: RESULT = "putstatic" :}
+| i_ret {: RESULT = "ret" :}
+| i_ret_w {: RESULT = "ret_w" :}
+| i_return {: RESULT = "return" :}
+| i_saload {: RESULT = "saload" :}
+| i_sastore {: RESULT = "sastore" :}
+| i_sipush {: RESULT = "sipush" :}
+| i_swap {: RESULT = "swap" :}
+| i_tableswitch {: RESULT = "tableswitch" :}
+| i_wide {: RESULT = "wide" :}
+;
 
 access ::=
     {: access_val = 0; :}

@@ -19,12 +19,13 @@
 
 package jasmin;
 
-import jas.*;
-import java_cup.runtime.*;
+import jas.jasError;
 
-import java.util.*;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Hashtable;
+
+import java_cup.runtime.Symbol;
 
 class Scanner implements java_cup.runtime.Scanner {
 	InputStreamReader inp;
@@ -118,7 +119,6 @@ class Scanner implements java_cup.runtime.Scanner {
 	// recognize and return the next complete symbol
 	//
 	public Symbol next_token() throws java.io.IOException, jasError {
-
 		token_line_num = line_num;
 
 		for (;;) {
@@ -302,23 +302,19 @@ class Scanner implements java_cup.runtime.Scanner {
 				// convert the byte array into a String
 				int secondPos = translateUnicodeCharacters(pos);
 				String str = new String(secondChars, 0, secondPos);
-				
+
 				// Is this a number?
 				Symbol tok;
-				if ((tok = tryParseAsNumber(str)) != null)
+				if ((tok = tryParseAsNumber(str)) != null) {
 					return tok;
-				
-				if ((tok = ReservedWords.get(str)) != null) {
-					// Jasmin keyword or directive
+				}
+
+				if ((tok = ReservedWords.get(str)) != null || (tok = ReservedInstructions.get(str)) != null) {
+					// Jasmin keyword or directive 
+					// or Jasmin instruction
+
 					return tok;
-				} else if (InsnInfo.contains(str)) {
-					// its a JVM instruction
-					return new Symbol(sym.Insn, str);
-				} /*
-				 * else if (str.charAt(0) == '$') { // Perform variable
-				 * substitution Object v; if ((v = dict.get(str.substring(1)))
-				 * != null) { return ((Symbol)v); } }
-				 */else {
+				} else {
 					// Unrecognized string token (e.g. a classname)
 					return new Symbol(sym.Word, str);
 				}
