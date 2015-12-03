@@ -102,6 +102,21 @@
     <delete dir="META-INF" />
   </target>
 
+  <target name="jasmin-fulljar" depends="jasmin-jar">
+    <mkdir dir="META-INF" />
+
+    <manifest file="META-INF/MANIFEST.MF">
+      <attribute name="Main-Class" value="jasmin.Main" />
+      <attribute name="Implementation-Version" value="${jasmin.version}" />
+    </manifest>
+
+    <jar destfile="${release.loc}/jasmin-${jasmin.version}.jar" manifest="META-INF/MANIFEST.MF">
+      <zipfileset src="${release.loc}/jasminclasses-${jasmin.version}.jar" />
+      <zipfileset src="${java_cup.jar}" />
+    </jar>
+    <delete dir="META-INF" />
+  </target>
+  
   <target name="barebones" depends="clean, settings">
     <jar destfile="${release.loc}/jasminsrc-${jasmin.versio}.jar">
       <fileset dir="." />
