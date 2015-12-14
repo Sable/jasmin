@@ -1,0 +1,10 @@
+<ivy-module version="2.0">
+    <info organisation="ca.mcgill.sable" module="jasmin"/>
+    <publications>
+        <artifact name="jasmin" type="jar" ext="jar" />
+        <artifact name="jasminsrc" type="source" ext="jar"/>
+        <!--
+        <artifact name="jasmin" type="classes" ext="jar" />
+        -->
+    </publications>
+</ivy-module>
