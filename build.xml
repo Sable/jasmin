@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project default="compile" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project default="compile" name="jasmin" xmlns:ivy="antlib:org.apache.ivy.ant">
   <property file="ant.settings" />
 
   <property name="tables.dir" value="tables.out" />
@@ -137,10 +137,10 @@
   
   <target name="barebones" depends="clean, settings">
     <jar destfile="${release.loc}/jasminsrc-${jasmin.version}.jar">
-      <fileset dir="." />
+      <fileset dir="." excludes="${release.loc}/**" />
     </jar>
     <tar destfile="${release.loc}/jasminsrc-${jasmin.version}.tar.gz" compression="gzip" longfile="gnu">
-      <tarfileset dir="." />
+      <tarfileset dir="." excludes="${release.loc}/**" />
     </tar>
   </target>
 
@@ -166,12 +166,25 @@
     <taskdef resource="org/apache/ivy/ant/antlib.xml"
              uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
   </target>
+	
+  <target name="gen-pom" depends="init-ivy">
+	<ivy:makepom ivyfile="ivy.xml" pomfile="${release.loc}/${ant.project.name}-${jasmin.version}.pom">
+		<mapping conf="default" scope="compile" />
+	</ivy:makepom>
+  </target>
 
-  <target name="publish-local" depends="init-ivy, jasmin-fulljar, jasmin-jar, barebones">
+  <target name="publish-local" depends="init-ivy, gen-pom, jasmin-fulljar, jasmin-jar, barebones">
     <ivy:resolve/>
     <ivy:publish pubrevision="${jasmin.version}" status="release" resolver="local" overwrite="true" >
       <artifacts pattern="${release.loc}/[artifact]-[revision].[ext]"/>
     </ivy:publish>
+  </target>
+	
+  <target name="publish-local-maven" depends="init-ivy, gen-pom, jasmin-fulljar, jasmin-jar, barebones" description="publish jar/source to maven repo mounted at ~/.m2/repository">
+		<ivy:resolve/>
+		<ivy:publish pubrevision="${jasmin.version}" resolver="local-m2-publish" forcedeliver="true" overwrite="true" publishivy="false">
+			<artifacts pattern="${release.loc}/[artifact]-[revision].[ext]" />
+		</ivy:publish>
   </target>
 
 </project>
