@@ -83,7 +83,7 @@
   </target>
 
   <target name="autogen_run" depends="autogen_compile, determine-autogen-uptodate" unless="autogen-uptodate">
-    <java classname="autogen" dir="generated/scm" classpath="classes" fork="true" />
+    <java classname="scm.autogen.autogen" dir="generated/scm" classpath="classes" fork="true" />
   </target>
 
   <target name="determine-autogen-uptodate">
