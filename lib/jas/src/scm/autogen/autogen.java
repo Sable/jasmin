@@ -1,3 +1,4 @@
+package scm.autogen;
                                 // Generate glue code
 
 import java.io.*;
@@ -74,7 +75,7 @@ class typeinfo
                   ("    "+java_inp_type[i]+" arg" + i +
                    " = (" + java_inp_type[i] + ")(((Selfrep)tmp).num);");
               }
-                
+
             break;
           default:              // primnode
             out.println
@@ -83,7 +84,7 @@ class typeinfo
                scm_name + " expects a " + java_inp_type[i] +
                " for arg #" + (i+1) + "\"); }");
             out.println
-              ("    if ((tmp != null) && !((((primnode)tmp).val) instanceof " + 
+              ("    if ((tmp != null) && !((((primnode)tmp).val) instanceof " +
                java_inp_type[i] + ")) { throw new SchemeError(\"" +
                scm_name + " expects a " + java_inp_type[i] +
                " for arg #" + (i+1) + "\"); }");
@@ -183,7 +184,7 @@ class procinfo
                scm_name + " expects a " + java_inp_type[i] +
                " for arg #" + (i+1) + "\"); }");
             out.println
-              ("    if ((tmp != null) && !((((primnode)tmp).val) instanceof " + 
+              ("    if ((tmp != null) && !((((primnode)tmp).val) instanceof " +
                java_inp_type[i] + ")) { throw new SchemeError(\"" +
                scm_name + " expects a " + java_inp_type[i] +
                " for arg #" + (i+1) + "\"); }");
@@ -206,7 +207,7 @@ class procinfo
 
 class autogen implements jas.RuntimeConstants
 {
-  
+
   static String procs[][] =
     {
                                 // Manipulate class env
