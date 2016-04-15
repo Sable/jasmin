@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <project default="compile" name="jasmin" xmlns:ivy="antlib:org.apache.ivy.ant">
   <property file="ant.settings" />
+  <property name="build.compiler" value="extJavac"/>
 
   <property name="tables.dir" value="tables.out" />
 
