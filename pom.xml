@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jasmin</artifactId>
     <groupId>jasmin</groupId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>2.2.2-SNAPSHOT</version>
 
     <build>
         <plugins>
@@ -36,18 +36,29 @@
                             <goal>run</goal>
                         </goals>
                     </execution>
-                    <!--<execution>
-                        <id>package</id>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>add-jar</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>run</goal>
+                            <goal>attach-artifact</goal>
                         </goals>
                         <configuration>
-                            <target>
-                                <attachartifact file="lib/jasminclasses-2.2.1.jar" type="jar"/>
-                            </target>
+                            <artifacts>
+                                <artifact>
+                                    <file>lib/jasminclasses-2.2.1.jar</file>
+                                    <type>jar</type>
+                                    <classifier>jasminclasses</classifier>
+                                </artifact>
+                            </artifacts>
                         </configuration>
-                    </execution>-->
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
