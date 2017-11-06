@@ -2,7 +2,7 @@
 
 Jasmin README file			   Jan 22nd, 2012, Eric Bodden
 
-Welcome to Jasmin version sable-2.5.0.
+Welcome to Jasmin version sable-3.0.0.
 
 This is a specialized version of jasmin which is used as a back end for the
 Soot framework.  
