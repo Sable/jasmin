@@ -4,7 +4,7 @@
   <groupId>ca.mcgill.sable</groupId>
   <artifactId>jasmin</artifactId>
   <name>Jasmin</name>
-  <version>3.0.1-SNAPSHOT</version>
+  <version>3.0.1</version>
   <description>Java Assembler Interface for the Soot framework</description>
   <properties>
     <maven.compiler.source>1.7</maven.compiler.source>
