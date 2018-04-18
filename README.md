@@ -1,6 +1,8 @@
+[![Build Status](http://soot-build.cs.uni-paderborn.de/jenkins/buildStatus/icon?job=soot/jasmin-build)](http://soot-build.cs.uni-paderborn.de/jenkins/job/soot/job/jasmin-build/)
+
 Jasmin README file			   Jan 22nd, 2012, Eric Bodden
 
-Welcome to Jasmin version sable-2.5.0.
+Welcome to Jasmin version sable-3.0.1.
 
 This is a specialized version of jasmin which is used as a back end for the
 Soot framework.  
