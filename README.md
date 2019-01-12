@@ -78,7 +78,7 @@ home page (http://cat.nyu.edu/meyer/jasmin).
 
   2. Add C:\JASMIN\BIN to your path by editing your AUTOEXEC.BAT.
 
-Then you run Jasmin using the vjasmin command (as show below). 
+Then you run Jasmin using the jasmin command (as show below). 
 
 -- Notes
 
