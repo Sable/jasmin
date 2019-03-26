@@ -61,7 +61,7 @@ public class Main {
     /**
      * The Jasmin version
      */
-    public final static String version = Main.class.getPackage().getImplementationVersion() == null ? "trunk" : Main.class.getPackage().getImplementationVersion();
+    public final static String version = Main.class.getPackage() == null || Main.class.getPackage().getImplementationVersion() == null ? "trunk" : Main.class.getPackage().getImplementationVersion();
 
     /**
      * Called to assemble a single file.
