@@ -1,4 +1,4 @@
-[![Build Status](https://soot-build.cs.uni-paderborn.de/jenkins/buildStatus/icon?job=soot/jasmin-master)](https://soot-build.cs.uni-paderborn.de/jenkins/job/soot/job/jasmin-master/)
+[![Build Status](https://github.com/soot-oss/soot/workflows/Soot%20CI/badge.svg?branch=develop)](https://github.com/soot-oss/soot/actions)
 
 Jasmin README file			   Jan 22nd, 2012, Eric Bodden
 
